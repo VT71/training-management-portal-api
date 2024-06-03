@@ -2335,27 +2335,28 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\user\\.nuget\\packages\\": {}
+    "/Users/Toma7100/.nuget/packages/": {},
+    "/usr/local/share/dotnet/sdk/NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\user\\Desktop\\training-management-portal-api\\TrainingManagementPortalAPI\\TrainingManagementPortalAPI.csproj",
+      "projectUniqueName": "/Users/Toma7100/Desktop/TrainingManagementPortalAPI/TrainingManagementPortalAPI/TrainingManagementPortalAPI.csproj",
       "projectName": "TrainingManagementPortalAPI",
-      "projectPath": "C:\\Users\\user\\Desktop\\training-management-portal-api\\TrainingManagementPortalAPI\\TrainingManagementPortalAPI.csproj",
-      "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\user\\Desktop\\training-management-portal-api\\TrainingManagementPortalAPI\\obj\\",
+      "projectPath": "/Users/Toma7100/Desktop/TrainingManagementPortalAPI/TrainingManagementPortalAPI/TrainingManagementPortalAPI.csproj",
+      "packagesPath": "/Users/Toma7100/.nuget/packages/",
+      "outputPath": "/Users/Toma7100/Desktop/TrainingManagementPortalAPI/TrainingManagementPortalAPI/obj/",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
+      ],
       "configFilePaths": [
-        "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/Users/Toma7100/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -2419,7 +2420,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.300/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

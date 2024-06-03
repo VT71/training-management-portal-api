@@ -12,23 +12,17 @@ public class UserController : ControllerBase
         _dapper = new DataContextDapper(config);
     }
 
-    [HttpGet("TestConnection")]
-    public DateTime TestConnection()
-    {
-        return _dapper.LoadDataSingle<DateTime>("SELECT GETDATE()");
-    }
-
-    [HttpGet("GetUsers/{testValue}")]
+    [HttpGet("GetUsers/{userId}")]
     // public IEnumerable<User> GetUsers()
-    public string[] GetUsers(string testValue)
+    public User GetUser(string userId)
     {
-        return new string[] {"user1", "user2", testValue };
-        // return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        // {
-        //     Date = DateTime.Now.AddDays(index),
-        //     TemperatureC = Random.Shared.Next(-20, 55),
-        //     Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        // })
-        // .ToArray();
+        string sql = @"SELECT [UserId],
+                        [FullName],
+                        [Email],
+                        [Role]
+                    FROM TrainingDatabaseSchema.Users WHERE UserId = " + "'" + userId + "'";
+        User user = _dapper.LoadDataSingle<User>(sql);
+
+        return user;
     }
 }
