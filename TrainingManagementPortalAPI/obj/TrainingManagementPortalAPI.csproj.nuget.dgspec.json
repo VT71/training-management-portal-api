@@ -1,28 +1,28 @@
 {
   "format": 1,
   "restore": {
-    "/Users/Toma7100/Desktop/TrainingManagementPortalAPI/TrainingManagementPortalAPI/TrainingManagementPortalAPI.csproj": {}
+    "C:\\Users\\user\\Desktop\\training-management-portal-api\\TrainingManagementPortalAPI\\TrainingManagementPortalAPI.csproj": {}
   },
   "projects": {
-    "/Users/Toma7100/Desktop/TrainingManagementPortalAPI/TrainingManagementPortalAPI/TrainingManagementPortalAPI.csproj": {
+    "C:\\Users\\user\\Desktop\\training-management-portal-api\\TrainingManagementPortalAPI\\TrainingManagementPortalAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/Toma7100/Desktop/TrainingManagementPortalAPI/TrainingManagementPortalAPI/TrainingManagementPortalAPI.csproj",
+        "projectUniqueName": "C:\\Users\\user\\Desktop\\training-management-portal-api\\TrainingManagementPortalAPI\\TrainingManagementPortalAPI.csproj",
         "projectName": "TrainingManagementPortalAPI",
-        "projectPath": "/Users/Toma7100/Desktop/TrainingManagementPortalAPI/TrainingManagementPortalAPI/TrainingManagementPortalAPI.csproj",
-        "packagesPath": "/Users/Toma7100/.nuget/packages/",
-        "outputPath": "/Users/Toma7100/Desktop/TrainingManagementPortalAPI/TrainingManagementPortalAPI/obj/",
+        "projectPath": "C:\\Users\\user\\Desktop\\training-management-portal-api\\TrainingManagementPortalAPI\\TrainingManagementPortalAPI.csproj",
+        "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\user\\Desktop\\training-management-portal-api\\TrainingManagementPortalAPI\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "/Users/Toma7100/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -46,9 +46,21 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
+            "Dapper": {
+              "target": "Package",
+              "version": "[2.1.35, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[8.0.5, )"
+            },
+            "Microsoft.Data.SqlClient": {
+              "target": "Package",
+              "version": "[5.2.1, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
@@ -74,7 +86,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.300/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
