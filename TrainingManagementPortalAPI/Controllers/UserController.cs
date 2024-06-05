@@ -25,4 +25,20 @@ public class UserController : ControllerBase
 
         return user;
     }
+
+    [HttpPut("EditUser")]
+    public IActionResult EditUser(User user)
+    {
+        string sql = @"UPDATE TrainingDatabaseSchema.Users
+                SET [FullName] = '" + user.FullName +
+                "', [Email] = '" + user.Email +
+            "' WHERE UserId = " + "'" + user.UserId + "'";
+
+        if (_dapper.ExecuteSql(sql))
+        {
+            return Ok();
+        }
+
+        throw new Exception("Failed to update user");
+    }
 }
