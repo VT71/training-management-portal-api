@@ -8,9 +8,9 @@ namespace TrainingManagementPortalAPI
         public int Online { get; set; }
         public DateTime Deadline { get; set; }
 
-        public string Departament { get; set; }
+        public int ForEmployees { get; set; }
 
-        public string Employee { get; set; }
+        public int ForDepartments { get; set; }
 
         public Trainings()
         {
@@ -22,14 +22,6 @@ namespace TrainingManagementPortalAPI
             if (Description == null)
             {
                 Description = "";
-            }
-            if (Departament == null)
-            {
-                Departament = "";
-            }
-            if (Employee == null)
-            {
-                Employee = "";
             }
 
         }

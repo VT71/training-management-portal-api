@@ -15,10 +15,12 @@ public class TrainingsController : ControllerBase
         _dapper = new DataContextDapper(config);
     }
 
+
     // [HttpGet("GetTraining/{trainingId}")]
     // // public IEnumerable<User> GetUsers()
     // public Trainings GetTraining(int trainingId)
     // {
+    // Training Model a fost schimbat. Actualizeaza codul.
     //     string sql = @"SELECT [TrainingId],
     //                     [Title],
     //                     [Description],
@@ -36,6 +38,7 @@ public class TrainingsController : ControllerBase
     [HttpPut("UpdateTraining")]
     public IActionResult UdpateTraining(int trainingId, Trainings trainings)
     {
+        // Training Model a fost schimbat. Actualizeaza codul.
         string sql = @"UPDATE TrainingDatabaseSchema.Trainings
                    SET [Title] = '" + trainings.Title +
                     " ',[Description] =  '" + trainings.Description +
