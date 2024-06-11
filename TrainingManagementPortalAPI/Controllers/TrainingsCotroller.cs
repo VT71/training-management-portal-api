@@ -39,22 +39,22 @@ public class TrainingsController : ControllerBase
     public IActionResult UdpateTraining(int trainingId, Trainings trainings)
     {
         // Training Model a fost schimbat. Actualizeaza codul.
-        string sql = @"UPDATE TrainingDatabaseSchema.Trainings
-                   SET [Title] = '" + trainings.Title +
-                    " ',[Description] =  '" + trainings.Description +
-                    " ',[Online] = ' " + trainings.Description +
-                    " ',[Deadline] = '" + trainings.Deadline +
-                    " ' [Departament] = '" + trainings.Deadline +
-                    " ' [Employee] = '" + trainings.Employee +
-                    " ' WHERE TrainingId = " + trainingId;
+        // string sql = @"UPDATE TrainingDatabaseSchema.Trainings
+        //            SET [Title] = '" + trainings.Title +
+        //             " ',[Description] =  '" + trainings.Description +
+        //             " ',[Online] = ' " + trainings.Description +
+        //             " ',[Deadline] = '" + trainings.Deadline +
+        //             " ' [Departament] = '" + trainings.Deadline +
+        //             " ' [Employee] = '" + trainings.Employee +
+        //             " ' WHERE TrainingId = " + trainingId;
 
 
 
-        if (_dapper.ExecuteSql(sql))
-        {
+        // if (_dapper.ExecuteSql(sql))
+        // {
             return Ok();
-        }
+        // }
 
-        throw new Exception("Failed to update user");
+        // throw new Exception("Failed to update user");
     }
 }
