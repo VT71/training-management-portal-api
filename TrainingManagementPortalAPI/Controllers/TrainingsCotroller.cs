@@ -15,39 +15,25 @@ public class TrainingsController : ControllerBase
         _dapper = new DataContextDapper(config);
     }
 
-    // [HttpGet("GetTraining/{trainingId}")]
-    // // public IEnumerable<User> GetUsers()
-    // public Trainings GetTraining(int trainingId)
-    // {
-    //     string sql = @"SELECT [TrainingId],
-    //                     [Title],
-    //                     [Description],
-    //                     [Online],
-    //                     [Deadline],
-    //                     [Departament],
-    //                     [Employee]
-    //                 FROM TrainingDatabaseSchema.Trainings WHERE TrainingId = " + trainingId.ToString();
-    //     Trainings training = _dapper.LoadDataSingle<Trainings>(sql);
 
-    //     return training;
-    // }
-
-
-    [HttpPut("UpdateTraining")]
-    public IActionResult UdpateTraining(int trainingId, Trainings trainings)
+    [HttpPost("CreateTraining")]
+    public IActionResult CreateTraining(Trainings trainings)
     {
-        string sql = @"UPDATE TrainingDatabaseSchema.Trainings
-                   SET [Title] = '" + trainings.Title +
-                    " ',[Description] =  '" + trainings.Description +
-                    " ',[Online] = ' " + trainings.Description +
-                    " ',[Deadline] = '" + trainings.Deadline +
-                    " ' [Departament] = '" + trainings.Deadline +
-                    " ' [Employee] = '" + trainings.Employee +
-                    " ' WHERE TrainingId = " + trainingId;
+        string sql = @"INSERT INTO TrainingDatabaseSchema.Trainings
+                   ([Title], [Description], [Online], [Deadline], [Department], [Employee])
+                   VALUES (@Title, @Description, @Online, @Deadline, @Department, @Employee)";
 
+        var parameters = new
+        {
+            trainings.Title,
+            trainings.Description,
+            trainings.Online,
+            trainings.Deadline,
+            // trainings.Department,
+            // trainings.Employee
+        };
 
-
-        if (_dapper.ExecuteSql(sql))
+        if (_dapper.ExecuteSql(sql, parameters))
         {
             return Ok();
         }

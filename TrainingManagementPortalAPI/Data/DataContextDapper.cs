@@ -24,10 +24,10 @@ namespace TrainingManagementPortalAPI
             return dbConnection.QuerySingle<T>(sql);
         }
 
-        public bool ExecuteSql(string sql)
+        public bool ExecuteSql(string sql, object? parameters = null)
         {
             IDbConnection dbConnection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
-            return dbConnection.Execute(sql) > 0;
+            return dbConnection.Execute(sql, parameters) > 0;
         }
 
         public int ExecuteSqlWithRowCount(string sql)
