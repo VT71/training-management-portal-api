@@ -40,4 +40,4 @@ public class TrainingsController : ControllerBase
 
         throw new Exception("Failed to update user");
     }
-}
+} 

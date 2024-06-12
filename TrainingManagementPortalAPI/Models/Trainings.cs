@@ -2,14 +2,15 @@ namespace TrainingManagementPortalAPI
 {
     public partial class Trainings
     {
-        
+
         public string Title { get; set; }
         public string Description { get; set; }
         public int Online { get; set; }
-        public string Deadline { get; set; }
-        
-        // public string Department { get; set; }
-        // public string Employee { get; set; }
+        public DateTime Deadline { get; set; }
+
+        public int ForEmployees { get; set; }
+
+        public int ForDepartments { get; set; }
 
         public Trainings()
         {
@@ -22,18 +23,6 @@ namespace TrainingManagementPortalAPI
             {
                 Description = "";
             }
-            if(Deadline == null) 
-            {
-                Deadline = "";
-            }
-            // if (Department == null)
-            // {
-            //     Department = "";
-            // }
-            // if (Employee == null)
-            // {
-            //     Employee = "";
-            // }
 
         }
     }
