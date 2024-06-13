@@ -41,4 +41,26 @@ public class UserController : ControllerBase
 
         throw new Exception("Failed to update user");
     }
+
+    [HttpPost("CreateUser")]
+    public User CreateUser(User user)
+    {
+        string sql = @"INSERT INTO TrainingDatabaseSchema.Users
+                    (UserId, FullName, Email, Role)
+                    VALUES
+                    (@UserId, @FullName, @Email, @Role);
+
+                    SELECT [UserId],
+                        [FullName],
+                        [Email],
+                        [Role]
+                    FROM TrainingDatabaseSchema.Users
+                    WHERE UserId = @UserId";
+
+        var parameters = new { user.UserId, user.FullName, user.Email, user.Role };
+
+        User newUser = _dapper.LoadDataSingle<User>(sql, parameters);
+
+        return newUser;
+    }
 }

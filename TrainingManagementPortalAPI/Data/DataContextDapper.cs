@@ -17,10 +17,10 @@ namespace TrainingManagementPortalAPI
             IDbConnection dbConnection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
             return dbConnection.Query<T>(sql);
         }
-        public T LoadDataSingle<T>(string sql)
+        public T LoadDataSingle<T>(string sql, object? parameters = null)
         {
             IDbConnection dbConnection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
-            return dbConnection.QuerySingle<T>(sql);
+            return dbConnection.QuerySingle<T>(sql, parameters);
         }
 
         public bool ExecuteSql(string sql, object? parameters = null)
