@@ -21,4 +21,29 @@ public class EmployeeController : ControllerBase
 
         return employeesComplete;
     }
+
+    [HttpPost("CreateEmployee")]
+    public Employee CreateEmployee(Employee employee)
+    {
+
+        var parameters = new { employee.Trainer, employee.UserId, employee.DepartmentId };
+
+        string sql = @"INSERT INTO TrainingDatabaseSchema.Employees
+                        (Trainer, UserId, DepartmentId)
+                    VALUES
+                        (@Trainer, @UserId, @DepartmentId);
+                    
+                    SELECT [EmployeeId],
+                        [Trainer],
+                        [UserId],
+                        [DepartmentId]
+                    FROM
+                        TrainingDatabaseSchema.Employees
+                    WHERE UserId = @UserId;";
+
+        Employee newEmployee = _dapper.LoadDataSingle<Employee>(sql, parameters);
+
+        return newEmployee;
+    }
 }
+

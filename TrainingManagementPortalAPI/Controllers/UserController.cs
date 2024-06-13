@@ -48,7 +48,7 @@ public class UserController : ControllerBase
         string sql = @"INSERT INTO TrainingDatabaseSchema.Users
                     (UserId, FullName, Email, Role)
                     VALUES
-                    (@UserId, @FullName, @Email, @Role);
+                    (@UserId, @FullName, @Email, 'Employee');
 
                     SELECT [UserId],
                         [FullName],
@@ -57,7 +57,7 @@ public class UserController : ControllerBase
                     FROM TrainingDatabaseSchema.Users
                     WHERE UserId = @UserId";
 
-        var parameters = new { user.UserId, user.FullName, user.Email, user.Role };
+        var parameters = new { user.UserId, user.FullName, user.Email };
 
         User newUser = _dapper.LoadDataSingle<User>(sql, parameters);
 
