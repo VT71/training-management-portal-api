@@ -22,6 +22,22 @@ public class EmployeeController : ControllerBase
         return employeesComplete;
     }
 
+    [HttpGet("GetEmployees")]
+    public IEnumerable<Employee> GetEmployees()
+    {
+        string sql = @"SELECT [EmployeeId],
+                        [Trainer],
+                        [UserId],
+                        [DepartmentId]
+                    FROM
+                        TrainingDatabaseSchema.Employees
+                    GO";
+
+        IEnumerable<Employee> employees = _dapper.LoadData<Employee>(sql);
+
+        return employees;
+    }
+
     [HttpPost("CreateEmployee")]
     public Employee CreateEmployee(Employee employee)
     {
