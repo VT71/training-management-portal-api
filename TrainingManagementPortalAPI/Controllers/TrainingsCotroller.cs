@@ -20,8 +20,8 @@ public class TrainingsController : ControllerBase
     public IActionResult CreateTraining(Trainings trainings)
     {
         string sql = @"INSERT INTO TrainingDatabaseSchema.Trainings
-                   ([Title], [Description], [Online], [Deadline], [Department], [Employee])
-                   VALUES (@Title, @Description, @Online, @Deadline, @Department, @Employee)";
+                   ([Title], [Description], [Online], [Deadline], [ForEmployees], [ForDepartments])
+                   VALUES (@Title, @Description, @Online, @Deadline, @ForEmployees, @ForDepartments)";
 
         var parameters = new
         {
@@ -29,8 +29,8 @@ public class TrainingsController : ControllerBase
             trainings.Description,
             trainings.Online,
             trainings.Deadline,
-            // trainings.Department,
-            // trainings.Employee
+            trainings.ForEmployees,
+            trainings.ForDepartments
         };
 
         if (_dapper.ExecuteSql(sql, parameters))
@@ -40,4 +40,4 @@ public class TrainingsController : ControllerBase
 
         throw new Exception("Failed to update user");
     }
-} 
+}

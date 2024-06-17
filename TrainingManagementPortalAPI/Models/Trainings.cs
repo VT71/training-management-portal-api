@@ -2,7 +2,6 @@ namespace TrainingManagementPortalAPI
 {
     public partial class Trainings
     {
-        public int TrainingId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public int Online { get; set; }
