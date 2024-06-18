@@ -71,5 +71,23 @@ public class EmployeeController : ControllerBase
 
         return newEmployee;
     }
+
+    [HttpPut("EditEmployee")]
+    public IActionResult EditUser(Employee employee)
+    {
+        var parameters = new { employee.EmployeeId, employee.Trainer, employee.DepartmentId };
+
+        string sql = @"UPDATE TrainingDatabaseSchema.Employees
+                SET [Trainer] = @Trainer, 
+                [DepartmentId] = @DepartmentId
+                WHERE EmployeeId = @EmployeeId";
+
+        if (_dapper.ExecuteSql(sql, parameters))
+        {
+            return Ok();
+        }
+
+        throw new Exception("Failed to update user");
+    }
 }
 

@@ -29,12 +29,14 @@ public class UserController : ControllerBase
     [HttpPut("EditUser")]
     public IActionResult EditUser(User user)
     {
-        string sql = @"UPDATE TrainingDatabaseSchema.Users
-                SET [FullName] = '" + user.FullName +
-                "', [Email] = '" + user.Email +
-            "' WHERE UserId = " + "'" + user.UserId + "'";
+        var parameters = new { user.FullName, user.Email, user.UserId };
 
-        if (_dapper.ExecuteSql(sql))
+        string sql = @"UPDATE TrainingDatabaseSchema.Users
+                SET [FullName] = @FullName, 
+                [Email] = @Email
+                WHERE UserId = @UserId";
+
+        if (_dapper.ExecuteSql(sql, parameters))
         {
             return Ok();
         }
