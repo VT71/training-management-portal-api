@@ -141,10 +141,7 @@ public class TrainingsController : ControllerBase
     [HttpDelete("DeleteTraining/{trainingId}")]
     public IActionResult DeleteTraining(int trainingId)
     {
-        string sql = @"
-        DELETE FROM TrainingDatabaseSchema.Trainings
-        WHERE [TrainingId] = @TrainingId
-    ";
+        string sql = @"EXECUTE TrainingDatabaseSchema.DeleteTraining @TrainingId = '" + trainingId + "'";
 
         var parameters = new { TrainingId = trainingId };
 
