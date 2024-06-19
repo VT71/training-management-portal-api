@@ -1,6 +1,6 @@
 namespace TrainingManagementPortalAPI
 {
-    public partial class Trainings
+    public partial class TrainingsComplete
     {
         public int TrainingId { get; set; }
         public string Title { get; set; }
@@ -11,9 +11,12 @@ namespace TrainingManagementPortalAPI
         public int Trainer { get; set; }
         public int ForDepartments { get; set; }
         public int ForEmployees { get; set; }
+        public List<int> Departments { get; set; }  // Schimbat de la int la List<int>
+        public List<int> Employees { get; set; }
+
 
       
-        public Trainings()
+        public TrainingsComplete()
         {
 
             if (Title == null)
@@ -28,7 +31,10 @@ namespace TrainingManagementPortalAPI
             {
                 Adress = "";
             }
-           
+            
+          
+            Departments = new List<int>();
+            Employees = new List<int>();
 
         }
     }

@@ -34,5 +34,10 @@ namespace TrainingManagementPortalAPI
             IDbConnection dbConnection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
             return dbConnection.Execute(sql);
         }
+
+        internal T ExecuteScalar<T>(string sql, object value)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
