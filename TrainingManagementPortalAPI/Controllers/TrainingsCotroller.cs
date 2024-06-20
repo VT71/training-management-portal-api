@@ -161,4 +161,40 @@ public class TrainingsController : ControllerBase
 
         throw new Exception("Failed to delete training");
     }
+
+    [HttpGet("GetMissedTrainingsByEmployee/{employeeId}")]
+    public IEnumerable<Trainings> GetMissedTrainingsByEmployee(int employeeId)
+    {
+        var current = DateTime.Now;
+
+        string sql = @"EXECUTE TrainingDatabaseSchema.GetMissedTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
+
+        IEnumerable<Trainings> missedTrainings = _dapper.LoadData<Trainings>(sql);
+
+        return missedTrainings;
+    }
+
+    [HttpGet("GetCompletedTrainingsByEmployee/{employeeId}")]
+    public IEnumerable<Trainings> GetCompletedTrainingsByEmployee(int employeeId)
+    {
+        var current = DateTime.Now;
+
+        string sql = @"EXECUTE TrainingDatabaseSchema.GetCompletedTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
+
+        IEnumerable<Trainings> completedTrainings = _dapper.LoadData<Trainings>(sql);
+
+        return completedTrainings;
+    }
+
+    [HttpGet("GetUpcomingTrainingsByEmployee/{employeeId}")]
+    public IEnumerable<Trainings> GetUpcomingTrainings(int employeeId)
+    {
+        var current = DateTime.Now;
+
+        string sql = @"EXECUTE TrainingDatabaseSchema.GetUpcomingTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
+
+        IEnumerable<Trainings> upcomingTrainings = _dapper.LoadData<Trainings>(sql);
+
+        return upcomingTrainings;
+    }
 }
