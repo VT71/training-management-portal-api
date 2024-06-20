@@ -176,4 +176,16 @@ public class TrainingsController : ControllerBase
 
         return completedTrainings;
     }
+
+    [HttpGet("GetUpcomingTrainingsByEmployee/{employeeId}")]
+    public IEnumerable<Trainings> GetUpcomingTrainings(int employeeId)
+    {
+        var current = DateTime.Now;
+
+        string sql = @"EXECUTE TrainingDatabaseSchema.GetUpcomingTrainings @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
+
+        IEnumerable<Trainings> upcomingTrainings = _dapper.LoadData<Trainings>(sql);
+
+        return upcomingTrainings;
+    }
 }
