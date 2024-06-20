@@ -4,7 +4,7 @@ namespace TrainingManagementPortalAPI
     {
         public int EmployeeId { get; set; }
         public int Trainer { get; set; }
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
         public int DepartmentId { get; set; }
 
         public Employee()
@@ -15,4 +15,4 @@ namespace TrainingManagementPortalAPI
             }
         }
     }
-}
+} 
