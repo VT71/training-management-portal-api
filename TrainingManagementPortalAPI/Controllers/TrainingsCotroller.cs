@@ -158,7 +158,7 @@ public class TrainingsController : ControllerBase
     {
         var current = DateTime.Now;
 
-        string sql = @"EXECUTE TrainingDatabaseSchema.GetMissedTrainings @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
+        string sql = @"EXECUTE TrainingDatabaseSchema.GetMissedTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
 
         IEnumerable<Trainings> missedTrainings = _dapper.LoadData<Trainings>(sql);
 
@@ -170,7 +170,7 @@ public class TrainingsController : ControllerBase
     {
         var current = DateTime.Now;
 
-        string sql = @"EXECUTE TrainingDatabaseSchema.GetCompletedTrainings @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
+        string sql = @"EXECUTE TrainingDatabaseSchema.GetCompletedTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
 
         IEnumerable<Trainings> completedTrainings = _dapper.LoadData<Trainings>(sql);
 
@@ -182,7 +182,7 @@ public class TrainingsController : ControllerBase
     {
         var current = DateTime.Now;
 
-        string sql = @"EXECUTE TrainingDatabaseSchema.GetUpcomingTrainings @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
+        string sql = @"EXECUTE TrainingDatabaseSchema.GetUpcomingTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
 
         IEnumerable<Trainings> upcomingTrainings = _dapper.LoadData<Trainings>(sql);
 
