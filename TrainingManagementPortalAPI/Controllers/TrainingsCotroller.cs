@@ -164,4 +164,16 @@ public class TrainingsController : ControllerBase
 
         return missedTrainings;
     }
+
+    [HttpGet("GetCompletedTrainingsByEmployee/{employeeId}")]
+    public IEnumerable<Trainings> GetCompletedTrainingsByEmployee(int employeeId)
+    {
+        var current = DateTime.Now;
+
+        string sql = @"EXECUTE TrainingDatabaseSchema.GetCompletedTrainings @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
+
+        IEnumerable<Trainings> completedTrainings = _dapper.LoadData<Trainings>(sql);
+
+        return completedTrainings;
+    }
 }
