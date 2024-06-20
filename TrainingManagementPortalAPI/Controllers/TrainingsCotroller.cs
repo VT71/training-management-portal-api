@@ -152,4 +152,16 @@ public class TrainingsController : ControllerBase
 
         throw new Exception("Failed to delete training");
     }
+
+    [HttpGet("GetMissedTrainingsByEmployee/{employeeId}")]
+    public IEnumerable<Trainings> GetMissedTrainingsByEmployee(int employeeId)
+    {
+        var current = DateTime.Now;
+
+        string sql = @"EXECUTE TrainingDatabaseSchema.GetMissedTrainings @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
+
+        IEnumerable<Trainings> missedTrainings = _dapper.LoadData<Trainings>(sql);
+
+        return missedTrainings;
+    }
 }
