@@ -48,6 +48,16 @@ public class EmployeeController : ControllerBase
         return employees;
     }
 
+    [HttpGet("GetTrainersComplete")]
+    public IEnumerable<EmployeeComplete> GetTrainersComplete()
+    {
+        string sql = @"EXECUTE TrainingDatabaseSchema.getTrainersComplete";
+
+        IEnumerable<EmployeeComplete> employeesComplete = _dapper.LoadData<EmployeeComplete>(sql);
+
+        return employeesComplete;
+    }
+
     [HttpPost("CreateEmployee")]
     public Employee CreateEmployee(Employee employee)
     {
@@ -73,7 +83,7 @@ public class EmployeeController : ControllerBase
     }
 
     [HttpPut("EditEmployee")]
-    public IActionResult EditUser(Employee employee)
+    public IActionResult EditEmployee(Employee employee)
     {
         var parameters = new { employee.EmployeeId, employee.Trainer, employee.DepartmentId };
 

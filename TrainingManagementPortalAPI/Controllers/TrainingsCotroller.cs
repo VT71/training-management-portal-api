@@ -79,7 +79,6 @@ public class TrainingsController : ControllerBase
             [Trainer] = @Trainer,
             [ForDepartments] = @ForDepartments,
             [ForEmployees] = @ForEmployees
- 
         WHERE [TrainingId] = @TrainingId
     ";
 
@@ -94,7 +93,6 @@ public class TrainingsController : ControllerBase
             trainings.Trainer,
             trainings.ForDepartments,
             trainings.ForEmployees,
-
         };
 
         if (_dapper.ExecuteSql(sql, parameters))
@@ -112,8 +110,8 @@ public class TrainingsController : ControllerBase
     {
         string sql = @"
         INSERT INTO TrainingDatabaseSchema.Trainings
-        ([Title], [Description], [Individual], [Adress], [Deadline],[Trainer], [ForDepartments], [ForEmployees], )
-        VALUES (@Title, @Description, @Individual, @Adress, @Deadline, @Trainer, @ForDepartments, @ForEmployees, ;
+        ([Title], [Description], [Individual], [Adress], [Deadline],[Trainer], [ForDepartments], [ForEmployees])
+        VALUES (@Title, @Description, @Individual, @Adress, @Deadline, @Trainer, @ForDepartments, @ForEmployees);
         ";
 
         var parameters = new
@@ -126,7 +124,6 @@ public class TrainingsController : ControllerBase
             trainings.Trainer,
             trainings.ForDepartments,
             trainings.ForEmployees,
-
         };
 
         if (_dapper.ExecuteSql(sql, parameters))
