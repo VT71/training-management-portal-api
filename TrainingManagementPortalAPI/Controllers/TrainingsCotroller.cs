@@ -28,8 +28,6 @@ public class TrainingsController : ControllerBase
                     [Trainer],
                     [ForEmployees],
                     [ForDepartments]
-                    [Title1],
-                    [Description1]
     FROM TrainingDatabaseSchema.Trainings
 ";
 
@@ -51,8 +49,6 @@ public class TrainingsController : ControllerBase
                     [Trainer],
                     [ForEmployees],
                     [ForDepartments]
-                    [Title1],
-                    [Description1]
     FROM TrainingDatabaseSchema.Trainings
     WHERE [TrainingId] = @TrainingId
 ";
@@ -83,8 +79,6 @@ public class TrainingsController : ControllerBase
             [Trainer] = @Trainer,
             [ForDepartments] = @ForDepartments,
             [ForEmployees] = @ForEmployees
-            [Title1] = @Title1,
-            [Description1] = @Description1
         WHERE [TrainingId] = @TrainingId
     ";
 
@@ -99,8 +93,6 @@ public class TrainingsController : ControllerBase
             trainings.Trainer,
             trainings.ForDepartments,
             trainings.ForEmployees,
-            trainings.Title1,
-            trainings.Description1
         };
 
         if (_dapper.ExecuteSql(sql, parameters))
@@ -118,8 +110,8 @@ public class TrainingsController : ControllerBase
     {
         string sql = @"
         INSERT INTO TrainingDatabaseSchema.Trainings
-        ([Title], [Description], [Individual], [Adress], [Deadline],[Trainer], [ForDepartments], [ForEmployees], [Title1], [Description1])
-        VALUES (@Title, @Description, @Individual, @Adress, @Deadline, @Trainer, @ForDepartments, @ForEmployees, @Title1, @Description1);
+        ([Title], [Description], [Individual], [Adress], [Deadline],[Trainer], [ForDepartments], [ForEmployees])
+        VALUES (@Title, @Description, @Individual, @Adress, @Deadline, @Trainer, @ForDepartments, @ForEmployees);
         ";
 
         var parameters = new
@@ -132,8 +124,6 @@ public class TrainingsController : ControllerBase
             trainings.Trainer,
             trainings.ForDepartments,
             trainings.ForEmployees,
-            trainings.Title1,
-            trainings.Description1
         };
 
         if (_dapper.ExecuteSql(sql, parameters))
