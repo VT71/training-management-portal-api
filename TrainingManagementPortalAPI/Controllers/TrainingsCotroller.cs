@@ -106,7 +106,7 @@ public class TrainingsController : ControllerBase
 
 
     [HttpPost("CreateTraining")]
-    public IActionResult CreateTraining(Trainings trainings)
+    public IActionResult CreateTraining(TrainingsComplete trainings)
     {
         string sql = @"
         INSERT INTO TrainingDatabaseSchema.Trainings
