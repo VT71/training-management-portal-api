@@ -177,7 +177,7 @@ public class TrainingsController : ControllerBase
     }
 
     [HttpGet("GetUpcomingTrainingsByEmployee/{employeeId}")]
-    public IEnumerable<Trainings> GetUpcomingTrainings(int employeeId)
+    public IEnumerable<Trainings> GetUpcomingTrainingsByEmployee(int employeeId)
     {
         var current = DateTime.Now;
 
@@ -186,5 +186,29 @@ public class TrainingsController : ControllerBase
         IEnumerable<Trainings> upcomingTrainings = _dapper.LoadData<Trainings>(sql);
 
         return upcomingTrainings;
+    }
+
+    [HttpGet("GetInProgressTrainingsByEmployee/{employeeId}")]
+    public IEnumerable<Trainings> GetInProgressTrainingsByEmployee(int employeeId)
+    {
+        var current = DateTime.Now;
+
+        string sql = @"EXECUTE TrainingDatabaseSchema.GetInProgressTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
+
+        IEnumerable<Trainings> upcomingTrainings = _dapper.LoadData<Trainings>(sql);
+
+        return upcomingTrainings;
+    }
+
+    [HttpGet("GetMissedTrainings")]
+    public IEnumerable<Trainings> GetMissedTrainings()
+    {
+        var current = DateTime.Now;
+
+        string sql = @"EXECUTE TrainingDatabaseSchema.GetMissedTrainings @TodayDateTime = '" + current + "'";
+
+        IEnumerable<Trainings> missedTrainings = _dapper.LoadData<Trainings>(sql);
+
+        return missedTrainings;
     }
 }

@@ -11,8 +11,6 @@ namespace TrainingManagementPortalAPI
         public int Trainer { get; set; }
         public int ForDepartments { get; set; }
         public int ForEmployees { get; set; }
-        public string Title1 { get; set; }
-        public string Description1 { get; set; }
         public List<int> Departments { get; set; }  // Schimbat de la int la List<int>
         public List<int> Employees { get; set; }
 
@@ -32,14 +30,6 @@ namespace TrainingManagementPortalAPI
             if (Adress == null)
             {
                 Adress = "";
-            }
-            if (Title1 == null)
-            {
-                Title1 = "";
-            }
-            if (Description1 == null)
-            {
-                Description1 = "";
             }
 
 
