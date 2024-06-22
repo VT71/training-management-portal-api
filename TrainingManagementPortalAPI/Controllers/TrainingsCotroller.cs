@@ -211,4 +211,16 @@ public class TrainingsController : ControllerBase
 
         return missedTrainings;
     }
+
+    [HttpGet("GetUpcomingTrainings")]
+    public IEnumerable<Trainings> GetUpcomingTrainings()
+    {
+        var current = DateTime.Now;
+
+        string sql = @"EXECUTE TrainingDatabaseSchema.GetUpcomingTrainings @TodayDateTime = '" + current + "'";
+
+        IEnumerable<Trainings> upcomingTrainings = _dapper.LoadData<Trainings>(sql);
+
+        return upcomingTrainings;
+    }
 }
