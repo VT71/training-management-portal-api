@@ -9,6 +9,7 @@ namespace TrainingManagementPortalAPI
         public string Adress { get; set; }
         public DateTime Deadline { get; set; }
         public List<int> Trainer { get; set; }
+        public List<string> TrainerName { get; set; }
         public int ForDepartments { get; set; }
         public int ForEmployees { get; set; }
         public List<int> Departments { get; set; }  // Schimbat de la int la List<int>
@@ -31,7 +32,8 @@ namespace TrainingManagementPortalAPI
             {
                 Adress = "";
             }
-
+            
+            TrainerName = new List<string>();
             Trainer = new List<int>();
             Departments = new List<int>();
             Employees = new List<int>();

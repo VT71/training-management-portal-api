@@ -40,23 +40,10 @@ public class TrainingsController : ControllerBase
     [HttpGet("GetTraining/{trainingId}")]
     public IActionResult GetTraining(int trainingId)
     {
-        string sql = @"SELECT [TrainingId],
-                    [Title],
-                    [Description],
-                    [Individual],
-                    [Adress],
-                    [Deadline],
-                    [Trainer],
-                    [ForEmployees],
-                    [ForDepartments]
-                    
-    FROM TrainingDatabaseSchema.Trainings
-    WHERE [TrainingId] = @TrainingId
-";
-
+        string sql = @"EXECUTE TrainingDatabaseSchema.GetCompleteTraining @TrainingId = '" + trainingId + "'";
         var parameters = new { TrainingId = trainingId };
 
-        var training = _dapper.LoadDataSingle<Trainings>(sql, parameters);
+        var training = _dapper.LoadDataSingle<TrainingsComplete>(sql, parameters);
 
         if (training != null)
         {
@@ -64,6 +51,9 @@ public class TrainingsController : ControllerBase
         }
 
         return NotFound();
+
+
+
     }
 
 
@@ -180,7 +170,7 @@ public class TrainingsController : ControllerBase
     [HttpGet("GetUpcomingTrainingsByEmployee/{employeeId}")]
     public IEnumerable<Trainings> GetUpcomingTrainingsByEmployee(int employeeId)
     {
-        var current =DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
+        var current = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
 
         string sql = @"EXECUTE TrainingDatabaseSchema.GetUpcomingTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
 
