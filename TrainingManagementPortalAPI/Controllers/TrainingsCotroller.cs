@@ -49,6 +49,7 @@ public class TrainingsController : ControllerBase
                     [Trainer],
                     [ForEmployees],
                     [ForDepartments]
+                    
     FROM TrainingDatabaseSchema.Trainings
     WHERE [TrainingId] = @TrainingId
 ";
