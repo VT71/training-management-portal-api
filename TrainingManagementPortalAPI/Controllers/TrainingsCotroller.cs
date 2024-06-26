@@ -180,7 +180,7 @@ public class TrainingsController : ControllerBase
     [HttpGet("GetUpcomingTrainingsByEmployee/{employeeId}")]
     public IEnumerable<Trainings> GetUpcomingTrainingsByEmployee(int employeeId)
     {
-        var current =DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
+        var current = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
 
         string sql = @"EXECUTE TrainingDatabaseSchema.GetUpcomingTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
 
@@ -227,9 +227,9 @@ public class TrainingsController : ControllerBase
     }
 
     [HttpGet("GetPercentageOfCompletedTrainingsByRange")]
-    public int GetPercentageOfCompletedTrainingsByRange(string startDate, string endDate)
+    public decimal GetPercentageOfCompletedTrainingsByRange(string startDate, string endDate)
     {
-        var parameters = new
+        var allParameters = new
         {
             StartDate = startDate,
             EndDate = endDate
@@ -239,14 +239,22 @@ public class TrainingsController : ControllerBase
                         FROM TrainingDatabaseSchema.Trainings AS T
                     WHERE T.Deadline >= @StartDate AND T.Deadline <= @EndDate";
 
-        int totalTrainings = _dapper.LoadDataSingle<int>(sql, parameters);
+        decimal totalTrainings = _dapper.LoadDataSingle<decimal>(sql, allParameters);
 
-        sql = @"EXECUTE TrainingDatabaseSchema.GetCompletedTrainingsByRange @StartDate = @StartDate, @EndDate = @EndDate;";
+        var current = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
 
-        int totalCompletedTrainings = _dapper.LoadDataSingle<int>(sql, parameters);
+        var completedParameters = new
+        {
+            TodaysDate = current,
+            StartDate = startDate,
+            EndDate = endDate
+        };
+
+        sql = @"EXECUTE TrainingDatabaseSchema.GetCompletedTrainingsByRange @TodaysDate = @TodaysDate, @StartDate = @StartDate, @EndDate = @EndDate;";
+
+        decimal totalCompletedTrainings = _dapper.LoadDataSingle<decimal>(sql, completedParameters);
 
 
-        return totalCompletedTrainings;
-        // return Math.Round(totalTrainings, 2);
+        return Math.Round(totalCompletedTrainings / totalTrainings, 2);
     }
 }
