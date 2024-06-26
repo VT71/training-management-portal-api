@@ -28,8 +28,8 @@ namespace TrainingManagementPortalAPI
             {
                 Adress = "";
             }
+          
 
-           
 
         }
     }

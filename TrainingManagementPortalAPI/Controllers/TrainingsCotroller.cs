@@ -37,35 +37,105 @@ public class TrainingsController : ControllerBase
 
     }
 
-    [HttpGet("GetTraining/{trainingId}")]
-    public IActionResult GetTraining(int trainingId)
+    [HttpPost("CreateTraining")]
+    public IActionResult CreateTraining(TrainingsComplete trainings)
     {
-        string sql = @"SELECT [TrainingId],
-                    [Title],
-                    [Description],
-                    [Individual],
-                    [Adress],
-                    [Deadline],
-                    [Trainer],
-                    [ForEmployees],
-                    [ForDepartments]
-                    
-    FROM TrainingDatabaseSchema.Trainings
-    WHERE [TrainingId] = @TrainingId
-";
+        Console.WriteLine(trainings);
+        string sql = @"EXECUTE TrainingDatabaseSchema.CreateTraining 
+        @Title = @Title, 
+        @Description = @Description, 
+        @Individual = @Individual, 
+        @Adress = @Adress, 
+        @Deadline = @Deadline, 
+        @Trainer = @Trainer, 
+        @ForDepartments = @ForDepartments, 
+        @ForEmployees = @ForEmployees";
 
+        var parameters = new
+        {
+            trainings.Title,
+            trainings.Description,
+            trainings.Individual,
+            trainings.Adress,
+            trainings.Deadline,
+            trainings.Trainer,
+            trainings.ForDepartments,
+            trainings.ForEmployees
+        };
+
+        Trainings newTraining = _dapper.LoadDataSingle<Trainings>(sql, parameters);
+        
+        foreach (var employee in trainings.Employees)
+        {
+            string sqlConnectEmployee = @"EXECUTE TrainingDatabaseSchema.connectEmployeeWithTraining 
+            @EmployeeId = @EmployeeId,
+            @TrainingId = @TrainingId";
+
+            var parametersConnectEmployee = new
+            {
+                employee.EmployeeId,
+                newTraining.TrainingId 
+            };
+
+            _dapper.ExecuteSql(sqlConnectEmployee, parametersConnectEmployee);
+        }
+
+        // 3. Conectare departamente cu trainingul (apel procedură stocată connectDepartmentWithTraining)
+        foreach (var department in trainings.Departments)
+        {
+            string sqlConnectDepartment = @"EXECUTE TrainingDatabaseSchema.connectDepartmentWithTraining 
+                                        @DepartmentId = @DepartmentId,
+                                        @TrainingId =  @TrainingId";
+
+            var parametersConnectDepartment = new
+            {
+                department.DepartmentId,
+                newTraining.TrainingId 
+            };
+
+            _dapper.ExecuteSql(sqlConnectDepartment, parametersConnectDepartment);
+        }
+
+        return Ok();
+
+    }
+
+    [HttpGet("GetTraining/{trainingId}")]
+    public TrainingsComplete GetTraining(int trainingId)
+    {
+        string sql = @"EXECUTE TrainingDatabaseSchema.GetCompleteTraining @TrainingId = '" + trainingId + "'";
         var parameters = new { TrainingId = trainingId };
 
-        var training = _dapper.LoadDataSingle<Trainings>(sql, parameters);
+
+        var training = _dapper.LoadDataSingle<TrainingsComplete>(sql, parameters);
 
         if (training != null)
         {
-            return Ok(training); // return the training object, not just the ID
+            if (training.ForEmployees == 1)
+            {
+                sql = @"EXECUTE TrainingDatabaseSchema.getEmployeesByTraining @TrainingId =  '" + trainingId + "'";
+                var employees = _dapper.LoadData<Employee>(sql);
+
+                if (employees != null)
+                {
+                    training.Employees = employees;
+                }
+            }
+
+            if (training.ForDepartments == 1)
+            {
+                sql = @"EXECUTE TrainingDatabaseSchema.getDepartmentsByTraining @TrainingId = '" + trainingId + "'";
+                var departments = _dapper.LoadData<Department>(sql);
+
+                if (departments != null)
+                {
+                    training.Departments = departments;
+                }
+            }
         }
+        return training;
 
-        return NotFound();
     }
-
 
     [HttpPut("UpdateTraining/{trainingId}")]
     public IActionResult UpdateTraining(int trainingId, Trainings trainings)
@@ -103,40 +173,6 @@ public class TrainingsController : ControllerBase
 
         throw new Exception("Failed to update training");
     }
-
-
-
-    [HttpPost("CreateTraining")]
-    public IActionResult CreateTraining(TrainingsComplete trainings)
-    {
-        string sql = @"
-        INSERT INTO TrainingDatabaseSchema.Trainings
-        ([Title], [Description], [Individual], [Adress], [Deadline],[Trainer], [ForDepartments], [ForEmployees])
-        VALUES (@Title, @Description, @Individual, @Adress, @Deadline, @Trainer, @ForDepartments, @ForEmployees);
-        ";
-
-        var parameters = new
-        {
-            trainings.Title,
-            trainings.Description,
-            trainings.Individual,
-            trainings.Adress,
-            trainings.Deadline,
-            trainings.Trainer,
-            trainings.ForDepartments,
-            trainings.ForEmployees,
-        };
-
-        if (_dapper.ExecuteSql(sql, parameters))
-
-        {
-
-            return Ok();
-        }
-
-        throw new Exception("Failed to update user");
-    }
-
 
     [HttpDelete("DeleteTraining/{trainingId}")]
     public IActionResult DeleteTraining(int trainingId)

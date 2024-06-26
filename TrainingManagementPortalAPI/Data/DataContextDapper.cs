@@ -39,5 +39,10 @@ namespace TrainingManagementPortalAPI
         {
             throw new NotImplementedException();
         }
+
+        internal T LoadSingle<T>(string checkTrainerSql, object checkParameters)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
