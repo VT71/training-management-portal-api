@@ -49,6 +49,7 @@ public class TrainingsController : ControllerBase
                     [Trainer],
                     [ForEmployees],
                     [ForDepartments]
+                    
     FROM TrainingDatabaseSchema.Trainings
     WHERE [TrainingId] = @TrainingId
 ";
@@ -155,7 +156,7 @@ public class TrainingsController : ControllerBase
     [HttpGet("GetMissedTrainingsByEmployee/{employeeId}")]
     public IEnumerable<Trainings> GetMissedTrainingsByEmployee(int employeeId)
     {
-        var current = DateTime.Now;
+        var current = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
 
         string sql = @"EXECUTE TrainingDatabaseSchema.GetMissedTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
 
@@ -167,7 +168,7 @@ public class TrainingsController : ControllerBase
     [HttpGet("GetCompletedTrainingsByEmployee/{employeeId}")]
     public IEnumerable<Trainings> GetCompletedTrainingsByEmployee(int employeeId)
     {
-        var current = DateTime.Now;
+        var current = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
 
         string sql = @"EXECUTE TrainingDatabaseSchema.GetCompletedTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
 
@@ -179,7 +180,7 @@ public class TrainingsController : ControllerBase
     [HttpGet("GetUpcomingTrainingsByEmployee/{employeeId}")]
     public IEnumerable<Trainings> GetUpcomingTrainingsByEmployee(int employeeId)
     {
-        var current = DateTime.Now;
+        var current =DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
 
         string sql = @"EXECUTE TrainingDatabaseSchema.GetUpcomingTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
 
@@ -191,7 +192,7 @@ public class TrainingsController : ControllerBase
     [HttpGet("GetInProgressTrainingsByEmployee/{employeeId}")]
     public IEnumerable<Trainings> GetInProgressTrainingsByEmployee(int employeeId)
     {
-        var current = DateTime.Now;
+        var current = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
 
         string sql = @"EXECUTE TrainingDatabaseSchema.GetInProgressTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
 
@@ -203,7 +204,7 @@ public class TrainingsController : ControllerBase
     [HttpGet("GetMissedTrainings")]
     public IEnumerable<Trainings> GetMissedTrainings()
     {
-        var current = DateTime.Now;
+        var current = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
 
         string sql = @"EXECUTE TrainingDatabaseSchema.GetMissedTrainings @TodayDateTime = '" + current + "'";
 
@@ -215,7 +216,8 @@ public class TrainingsController : ControllerBase
     [HttpGet("GetUpcomingTrainings")]
     public IEnumerable<Trainings> GetUpcomingTrainings()
     {
-        var current = DateTime.Now;
+        var current = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
+        Console.WriteLine(current);
 
         string sql = @"EXECUTE TrainingDatabaseSchema.GetUpcomingTrainings @TodayDateTime = '" + current + "'";
 
