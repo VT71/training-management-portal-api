@@ -223,4 +223,28 @@ public class TrainingsController : ControllerBase
 
         return upcomingTrainings;
     }
+
+    [HttpGet("GetPercentageOfCompletedTrainingsByRange")]
+    public int GetPercentageOfCompletedTrainingsByRange(string startDate, string endDate)
+    {
+        var parameters = new
+        {
+            StartDate = startDate,
+            EndDate = endDate
+        };
+
+        string sql = @"SELECT COUNT(*)
+                        FROM TrainingDatabaseSchema.Trainings AS T
+                    WHERE T.Deadline >= @StartDate AND T.Deadline <= @EndDate";
+
+        int totalTrainings = _dapper.LoadDataSingle<int>(sql, parameters);
+
+        sql = @"EXECUTE TrainingDatabaseSchema.GetCompletedTrainingsByRange @StartDate = @StartDate, @EndDate = @EndDate;";
+
+        int totalCompletedTrainings = _dapper.LoadDataSingle<int>(sql, parameters);
+
+
+        return totalCompletedTrainings;
+        // return Math.Round(totalTrainings, 2);
+    }
 }
