@@ -16,7 +16,7 @@ public class ReportsController : ControllerBase
     }
 
     [HttpGet("GetPercentageOfCompletedTrainingsByRange")]
-    public decimal GetPercentageOfCompletedTrainingsByRange(string startDate, string endDate)
+    public decimal GetPercentageOfCompletedTrainingsByRange([FromQuery] string startDate, string endDate)
     {
         var allParameters = new
         {
