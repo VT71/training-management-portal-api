@@ -71,4 +71,22 @@ public class ReportsController : ControllerBase
 
         return departmentsProgresses;
     }
+
+    [HttpGet("GetTotalTrainingsByType")]
+    public IEnumerable<TrainingTypeStat> GetTotalTrainingsByType([FromQuery] string startDate, string endDate)
+    {
+        var parameters = new
+        {
+            StartDate = startDate,
+            EndDate = endDate
+        };
+
+        string sql = @"EXECUTE TrainingDatabaseSchema.GetTotalTrainingsByType 
+                    @StartDate = @StartDate, 
+                    @EndDate = @EndDate";
+
+        IEnumerable<TrainingTypeStat> departmentsProgresses = _dapper.LoadData<TrainingTypeStat>(sql, parameters);
+
+        return departmentsProgresses;
+    }
 }
