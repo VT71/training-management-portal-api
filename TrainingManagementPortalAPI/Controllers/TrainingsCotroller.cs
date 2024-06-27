@@ -64,7 +64,7 @@ public class TrainingsController : ControllerBase
         };
 
         Trainings newTraining = _dapper.LoadDataSingle<Trainings>(sql, parameters);
-        
+
         foreach (var employee in trainings.Employees)
         {
             string sqlConnectEmployee = @"EXECUTE TrainingDatabaseSchema.connectEmployeeWithTraining 
@@ -74,7 +74,7 @@ public class TrainingsController : ControllerBase
             var parametersConnectEmployee = new
             {
                 employee.EmployeeId,
-                newTraining.TrainingId 
+                newTraining.TrainingId
             };
 
             _dapper.ExecuteSql(sqlConnectEmployee, parametersConnectEmployee);
@@ -90,7 +90,7 @@ public class TrainingsController : ControllerBase
             var parametersConnectDepartment = new
             {
                 department.DepartmentId,
-                newTraining.TrainingId 
+                newTraining.TrainingId
             };
 
             _dapper.ExecuteSql(sqlConnectDepartment, parametersConnectDepartment);
@@ -113,8 +113,8 @@ public class TrainingsController : ControllerBase
         {
             if (training.ForEmployees == 1)
             {
-                sql = @"EXECUTE TrainingDatabaseSchema.getEmployeesByTraining @TrainingId =  '" + trainingId + "'";
-                var employees = _dapper.LoadData<Employee>(sql);
+                sql = @"EXECUTE TrainingDatabaseSchema.getEmployeesCompleteByTraining @TrainingId =  '" + trainingId + "'";
+                var employees = _dapper.LoadData<EmployeeComplete>(sql);
 
                 if (employees != null)
                 {

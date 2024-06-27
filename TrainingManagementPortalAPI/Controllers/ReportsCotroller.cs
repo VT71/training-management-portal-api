@@ -46,4 +46,14 @@ public class ReportsController : ControllerBase
 
         return Math.Round(totalCompletedTrainings / totalTrainings, 2);
     }
+
+    [HttpGet("GetDepartmentsCompletionRates")]
+    public IEnumerable<DepartmentProgress> GetDepartmentsCompletionRates()
+    {
+        string sql = @"EXECUTE TrainingDatabaseSchema.GetDepartmentsCompletionRates";
+
+        IEnumerable<DepartmentProgress> departmentsCompletionRates = _dapper.LoadData<DepartmentProgress>(sql);
+
+        return departmentsCompletionRates;
+    }
 }
