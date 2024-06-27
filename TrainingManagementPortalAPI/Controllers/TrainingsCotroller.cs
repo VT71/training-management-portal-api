@@ -174,6 +174,9 @@ public class TrainingsController : ControllerBase
         throw new Exception("Failed to update training");
     }
 
+
+    
+
     [HttpDelete("DeleteTraining/{trainingId}")]
     public IActionResult DeleteTraining(int trainingId)
     {
