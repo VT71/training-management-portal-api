@@ -39,7 +39,10 @@ public class ReportsController : ControllerBase
             EndDate = endDate
         };
 
-        sql = @"EXECUTE TrainingDatabaseSchema.GetCompletedTrainingsByRange @TodaysDate = @TodaysDate, @StartDate = @StartDate, @EndDate = @EndDate;";
+        sql = @"EXECUTE TrainingDatabaseSchema.GetCompletedTrainingsByRange 
+                @TodaysDate = @TodaysDate, 
+                @StartDate = @StartDate, 
+                @EndDate = @EndDate;";
 
         decimal totalCompletedTrainings = _dapper.LoadDataSingle<decimal>(sql, completedParameters);
 
@@ -47,13 +50,25 @@ public class ReportsController : ControllerBase
         return Math.Round(totalCompletedTrainings / totalTrainings, 2);
     }
 
-    [HttpGet("GetDepartmentsCompletionRates")]
-    public IEnumerable<DepartmentProgress> GetDepartmentsCompletionRates()
+    [HttpGet("GetDepartmentsProgress")]
+    public IEnumerable<DepartmentProgress> GetDepartmentsCompletionRates([FromQuery] string startDate, string endDate)
     {
-        string sql = @"EXECUTE TrainingDatabaseSchema.GetDepartmentsCompletionRates";
+        var current = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
 
-        IEnumerable<DepartmentProgress> departmentsCompletionRates = _dapper.LoadData<DepartmentProgress>(sql);
+        var parameters = new
+        {
+            TodaysDate = current,
+            StartDate = startDate,
+            EndDate = endDate
+        };
 
-        return departmentsCompletionRates;
+        string sql = @"EXECUTE TrainingDatabaseSchema.GetDepartmentsCompletionRates 
+                    @TodaysDate = @TodaysDate, 
+                    @StartDate = @StartDate, 
+                    @EndDate = @EndDate";
+
+        IEnumerable<DepartmentProgress> departmentsProgresses = _dapper.LoadData<DepartmentProgress>(sql, parameters);
+
+        return departmentsProgresses;
     }
 }
