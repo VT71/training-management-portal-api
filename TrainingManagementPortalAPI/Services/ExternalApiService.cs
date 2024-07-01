@@ -6,9 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
+using TrainingManagementPortalAPI;
 public interface IExternalApiService
 {
     Task<string> SendEmailToUser(string toEmail, string subject, string body);
+    Task NotifyTrainingParticipants(Trainings newTraining, IEnumerable<EmployeeComplete> employees, string type);
 }
 
 public class ExternalApiService : IExternalApiService
@@ -65,5 +67,37 @@ public class ExternalApiService : IExternalApiService
         response.EnsureSuccessStatusCode();
 
         return await response.Content.ReadAsStringAsync();
+    }
+
+    public async Task NotifyTrainingParticipants(Trainings newTraining, IEnumerable<EmployeeComplete> employees, string type)
+    {
+        string message = "";
+        if (type == "trainer" && employees.Count() > 0)
+        {
+            foreach (var employee in employees)
+            {
+                message = $"Dear {employee.FullName},\n\nYou have a new training to conduct.\n\nTraining Name: {newTraining.Title}\nTraining Type: Workshop\nTraining Link/Address: {newTraining.Adress}\nTraining Date: {newTraining.Deadline.Day + "/" + newTraining.Deadline.Month + "/" + newTraining.Deadline.Year}\n\nKind Regards,\nAdmin Team.";
+                await SendEmailToUser(employee.Email, "New Training Assigned", message);
+            }
+
+        }
+
+        if (type == "employee" && employees.Count() > 0)
+        {
+            foreach (var employee in employees)
+            {
+                if (newTraining.Individual == 0)
+                {
+                    message = $"Dear {employee.FullName},\n\nYou have a new training to complete.\n\nTraining Name: {newTraining.Title}\nTraining Type: Workshop\nTraining Link/Address: {newTraining.Adress}\nTraining Date: {newTraining.Deadline.Day + "/" + newTraining.Deadline.Month + "/" + newTraining.Deadline.Year}\n\nKind Regards,\nAdmin Team.";
+                }
+                else
+                {
+                    message = $"Dear {employee.FullName},\n\nYou have a new training to complete.\n\nTraining Name: {newTraining.Title}\nTraining Type: Individual\nTraining Deadline: {newTraining.Deadline.Day + "/" + newTraining.Deadline.Month + "/" + newTraining.Deadline.Year}\n\nKind Regards,\nAdmin Team.";
+                }
+                await SendEmailToUser(employee.Email, "New Training Assigned", message);
+            }
+
+        }
+
     }
 }
