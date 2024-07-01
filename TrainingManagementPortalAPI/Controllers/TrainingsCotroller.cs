@@ -64,7 +64,7 @@ public class TrainingsController : ControllerBase
         };
 
         Trainings newTraining = _dapper.LoadDataSingle<Trainings>(sql, parameters);
-        
+
         foreach (var employee in trainings.Employees)
         {
             string sqlConnectEmployee = @"EXECUTE TrainingDatabaseSchema.connectEmployeeWithTraining 
@@ -74,7 +74,7 @@ public class TrainingsController : ControllerBase
             var parametersConnectEmployee = new
             {
                 employee.EmployeeId,
-                newTraining.TrainingId 
+                newTraining.TrainingId
             };
 
             _dapper.ExecuteSql(sqlConnectEmployee, parametersConnectEmployee);
@@ -90,7 +90,7 @@ public class TrainingsController : ControllerBase
             var parametersConnectDepartment = new
             {
                 department.DepartmentId,
-                newTraining.TrainingId 
+                newTraining.TrainingId
             };
 
             _dapper.ExecuteSql(sqlConnectDepartment, parametersConnectDepartment);
@@ -138,20 +138,18 @@ public class TrainingsController : ControllerBase
     }
 
     [HttpPut("UpdateTraining/{trainingId}")]
-    public IActionResult UpdateTraining(int trainingId, Trainings trainings)
+    public IActionResult UpdateTraining(int trainingId, TrainingsComplete trainings)
     {
-        string sql = @"
-        UPDATE TrainingDatabaseSchema.Trainings
-        SET [Title] = @Title,
-            [Description] = @Description,
-            [Individual] = @Individual,
-            [Adress], = @Adress,
-            [Deadline] = @Deadline,
-            [Trainer] = @Trainer,
-            [ForDepartments] = @ForDepartments,
-            [ForEmployees] = @ForEmployees
-        WHERE [TrainingId] = @TrainingId
-    ";
+        string sql = @"EXECUTE TrainingDatabaseSchema.UpdateTraining 
+        @TrainingId = @TrainingId,
+        @Title = @Title, 
+        @Description = @Description, 
+        @Individual = @Individual, 
+        @Adress = @Adress, 
+        @Deadline = @Deadline, 
+        @Trainer = @Trainer, 
+        @ForDepartments = @ForDepartments, 
+        @ForEmployees = @ForEmployees";
 
         var parameters = new
         {
@@ -174,8 +172,6 @@ public class TrainingsController : ControllerBase
         throw new Exception("Failed to update training");
     }
 
-
-    
 
     [HttpDelete("DeleteTraining/{trainingId}")]
     public IActionResult DeleteTraining(int trainingId)
