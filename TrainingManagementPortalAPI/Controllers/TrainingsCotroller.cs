@@ -9,10 +9,12 @@ public class TrainingsController : ControllerBase
 {
 
     DataContextDapper _dapper;
+    private readonly IExternalApiService _externalApiService;
 
-    public TrainingsController(IConfiguration config)
+    public TrainingsController(IConfiguration config, IExternalApiService externalApiService)
     {
         _dapper = new DataContextDapper(config);
+        _externalApiService = externalApiService;
     }
 
     [HttpGet("GetTrainings")]
@@ -38,7 +40,7 @@ public class TrainingsController : ControllerBase
     }
 
     [HttpPost("CreateTraining")]
-    public IActionResult CreateTraining(TrainingsComplete trainings)
+    public async Task<IActionResult> CreateTraining(TrainingsComplete trainings)
     {
         Console.WriteLine(trainings);
         string sql = @"EXECUTE TrainingDatabaseSchema.CreateTraining 
@@ -95,6 +97,33 @@ public class TrainingsController : ControllerBase
 
             _dapper.ExecuteSql(sqlConnectDepartment, parametersConnectDepartment);
         }
+
+        // Send email to each employee
+        if (trainings.Employees.Count() > 0)
+        {
+            sql = @"SELECT [U].[FullName],[U].[Email]
+                    FROM TrainingDatabaseSchema.Training_Employee AS TE
+                        JOIN TrainingDatabaseSchema.Employees AS E ON TE.EmployeeId = E.EmployeeId
+                        JOIN TrainingDatabaseSchema.Users AS U ON U.UserId = E.UserId
+                    WHERE TE.TrainingId = '" + newTraining.TrainingId + "';";
+
+            IEnumerable<EmployeeComplete> trainingEmployees = _dapper.LoadData<EmployeeComplete>(sql);
+
+            foreach (var employee in trainingEmployees)
+            {
+                string message = "";
+                if (newTraining.Individual == 0)
+                {
+                    message = $"Dear {employee.FullName},\n\nYou have a new training to complete.\n\nTraining Name: {newTraining.Title}\nTraining Type: Workshop\nTraining Link/Address:{newTraining.Adress}\nTraining Deadline: {newTraining.Deadline}\n\nKind Regards,\nAdmin Team.";
+                }
+                else
+                {
+                    message = $"Dear {employee.FullName},\n\nYou have a new training to complete.\n\nTraining Name: {newTraining.Title}\nTraining Type: Individual\nTraining Deadline: {newTraining.Deadline}\n\nKind Regards,\nAdmin Team.";
+                }
+                await _externalApiService.SendEmailToUser(employee.Email, "New Training Assigned", message);
+            }
+        }
+
 
         return Ok();
 
