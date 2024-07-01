@@ -13,7 +13,7 @@ namespace TrainingManagementPortalAPI
         public int ForDepartments { get; set; }
         public int ForEmployees { get; set; }
         public  IEnumerable<Department> Departments { get; set; }  // Schimbat de la int la List<int>
-        public IEnumerable<Employee> Employees { get; set; }
+        public IEnumerable<EmployeeComplete> Employees { get; set; }
     
         public TrainingsComplete()
         {

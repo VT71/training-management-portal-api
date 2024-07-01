@@ -16,7 +16,7 @@ public class ReportsController : ControllerBase
     }
 
     [HttpGet("GetPercentageOfCompletedTrainingsByRange")]
-    public decimal GetPercentageOfCompletedTrainingsByRange(string startDate, string endDate)
+    public decimal GetPercentageOfCompletedTrainingsByRange([FromQuery] string startDate, string endDate)
     {
         var allParameters = new
         {
@@ -39,11 +39,54 @@ public class ReportsController : ControllerBase
             EndDate = endDate
         };
 
-        sql = @"EXECUTE TrainingDatabaseSchema.GetCompletedTrainingsByRange @TodaysDate = @TodaysDate, @StartDate = @StartDate, @EndDate = @EndDate;";
+        sql = @"EXECUTE TrainingDatabaseSchema.GetCompletedTrainingsByRange 
+                @TodaysDate = @TodaysDate, 
+                @StartDate = @StartDate, 
+                @EndDate = @EndDate;";
 
         decimal totalCompletedTrainings = _dapper.LoadDataSingle<decimal>(sql, completedParameters);
 
 
         return Math.Round(totalCompletedTrainings / totalTrainings, 2);
+    }
+
+    [HttpGet("GetDepartmentsProgress")]
+    public IEnumerable<DepartmentProgress> GetDepartmentsCompletionRates([FromQuery] string startDate, string endDate)
+    {
+        var current = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
+
+        var parameters = new
+        {
+            TodaysDate = current,
+            StartDate = startDate,
+            EndDate = endDate
+        };
+
+        string sql = @"EXECUTE TrainingDatabaseSchema.GetDepartmentsCompletionRates 
+                    @TodaysDate = @TodaysDate, 
+                    @StartDate = @StartDate, 
+                    @EndDate = @EndDate";
+
+        IEnumerable<DepartmentProgress> departmentsProgresses = _dapper.LoadData<DepartmentProgress>(sql, parameters);
+
+        return departmentsProgresses;
+    }
+
+    [HttpGet("GetTotalTrainingsByType")]
+    public IEnumerable<TrainingTypeStat> GetTotalTrainingsByType([FromQuery] string startDate, string endDate)
+    {
+        var parameters = new
+        {
+            StartDate = startDate,
+            EndDate = endDate
+        };
+
+        string sql = @"EXECUTE TrainingDatabaseSchema.GetTotalTrainingsByType 
+                    @StartDate = @StartDate, 
+                    @EndDate = @EndDate";
+
+        IEnumerable<TrainingTypeStat> departmentsProgresses = _dapper.LoadData<TrainingTypeStat>(sql, parameters);
+
+        return departmentsProgresses;
     }
 }

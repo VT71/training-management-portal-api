@@ -113,8 +113,8 @@ public class TrainingsController : ControllerBase
         {
             if (training.ForEmployees == 1)
             {
-                sql = @"EXECUTE TrainingDatabaseSchema.getEmployeesByTraining @TrainingId =  '" + trainingId + "'";
-                var employees = _dapper.LoadData<Employee>(sql);
+                sql = @"EXECUTE TrainingDatabaseSchema.getEmployeesCompleteByTraining @TrainingId =  '" + trainingId + "'";
+                var employees = _dapper.LoadData<EmployeeComplete>(sql);
 
                 if (employees != null)
                 {

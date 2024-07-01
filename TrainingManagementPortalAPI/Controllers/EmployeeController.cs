@@ -7,9 +7,11 @@ namespace TrainingManagementPortalAPI.Controllers;
 public class EmployeeController : ControllerBase
 {
     DataContextDapper _dapper;
-    public EmployeeController(IConfiguration config)
+    private readonly IExternalApiService _externalApiService;
+    public EmployeeController(IConfiguration config, IExternalApiService externalApiService)
     {
         _dapper = new DataContextDapper(config);
+        _externalApiService = externalApiService;
     }
 
     [HttpGet("GetEmployeesComplete")]
@@ -98,6 +100,21 @@ public class EmployeeController : ControllerBase
         }
 
         throw new Exception("Failed to update user");
+    }
+
+    [HttpGet("Test")]
+    public async Task<IActionResult> Test()
+    {
+        try
+        {
+            var externalData = await _externalApiService.SendEmailToUser("tomav98@gmail.com", "New account created", "An account has been created for you on the Training Management Portal.\nYou should receive an email allowing you to reset your password and login.\nThank you.");
+
+            return Ok(externalData);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, "An unexpected error occurred");
+        }
     }
 }
 
