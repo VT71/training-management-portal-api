@@ -70,4 +70,16 @@ public class UserController : ControllerBase
 
         return newUser;
     }
+
+    [HttpGet("IsAdmin")]
+    public bool IsAdmin(string userId)
+    {
+        string sql = @"SELECT [Role]
+                    FROM TrainingDatabaseSchema.Users
+                    WHERE UserId = '" + userId + "'";
+
+        string role = _dapper.LoadDataSingle<string>(sql);
+
+        return role == "admin";
+    }
 }
