@@ -7,9 +7,12 @@ namespace TrainingManagementPortalAPI.Controllers;
 public class UserController : ControllerBase
 {
     DataContextDapper _dapper;
-    public UserController(IConfiguration config)
+    private readonly IExternalApiService _externalApiService;
+
+    public UserController(IConfiguration config, IExternalApiService externalApiService)
     {
         _dapper = new DataContextDapper(config);
+        _externalApiService = externalApiService;
     }
 
     [HttpGet("GetUsers/{userId}")]
@@ -45,7 +48,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("CreateUser")]
-    public User CreateUser(User user)
+    public async Task<User> CreateUser(User user)
     {
         string sql = @"INSERT INTO TrainingDatabaseSchema.Users
                     (UserId, FullName, Email, Role)
@@ -62,6 +65,8 @@ public class UserController : ControllerBase
         var parameters = new { user.UserId, user.FullName, user.Email };
 
         User newUser = _dapper.LoadDataSingle<User>(sql, parameters);
+
+        await _externalApiService.SendEmailToUser(user.Email, "New account created", "An account has been created for you on the Training Management Portal.\n\nYou should receive an email allowing you to reset your password and login.\n\nKind Regards,\nAdmin Team.");
 
         return newUser;
     }
