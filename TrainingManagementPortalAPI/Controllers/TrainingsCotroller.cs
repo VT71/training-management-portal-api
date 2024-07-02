@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-
+using System.Data;
 namespace TrainingManagementPortalAPI.Controllers;
 
 [ApiController]
@@ -65,6 +65,7 @@ public class TrainingsController : ControllerBase
             trainings.ForEmployees
         };
 
+
         Trainings newTraining = _dapper.LoadDataSingle<Trainings>(sql, parameters); ;
 
         foreach (var employee in trainings.Employees)
@@ -82,21 +83,34 @@ public class TrainingsController : ControllerBase
             _dapper.ExecuteSql(sqlConnectEmployee, parametersConnectEmployee);
         }
 
-        // 3. Conectare departamente cu trainingul (apel procedură stocată connectDepartmentWithTraining)
-        foreach (var department in trainings.Departments)
-        {
-            string sqlConnectDepartment = @"EXECUTE TrainingDatabaseSchema.connectDepartmentWithTraining 
-                                        @DepartmentId = @DepartmentId,
-                                        @TrainingId =  @TrainingId";
+        // Define the DataTable for sections
+        DataTable sectionsTable = new();
+        sectionsTable.Columns.Add("Title", typeof(string));
+        sectionsTable.Columns.Add("Description", typeof(string));
 
-            var parametersConnectDepartment = new
+        // Populate the DataTable with section data
+        foreach (var section in trainings.Sections)
+        {
+            sectionsTable.Rows.Add(section.Title, section.Description);
+
+            // Create the SQL command to create the training and sections
+            string sqlCreateWithSections = @"EXECUTE TrainingDatabaseSchema.CreateTrainingWithSections 
+                   @TrainingTitle = @TrainingTitle, 
+                   @TrainingDescription = @TrainingDescription, 
+                   @Sections = @Sections";
+
+            // Define the parameters
+            var parametersCreateWithSections = new
             {
-                department.DepartmentId,
-                newTraining.TrainingId
+                trainings.Title,
+                trainings.Description,
+                Sections = sectionsTable // Pass the DataTable as a parameter
             };
 
-            _dapper.ExecuteSql(sqlConnectDepartment, parametersConnectDepartment);
+            _dapper.ExecuteSql(sqlCreateWithSections, parametersCreateWithSections);
         }
+        // 3. Conectare departamente cu trainingul (apel procedură stocată connectDepartmentWithTraining)
+
 
         // Send email to trainer
         sql = @"SELECT [U].[FullName],[U].[Email]

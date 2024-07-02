@@ -14,6 +14,7 @@ namespace TrainingManagementPortalAPI
         public int ForEmployees { get; set; }
         public  IEnumerable<Department> Departments { get; set; }  // Schimbat de la int la List<int>
         public IEnumerable<EmployeeComplete> Employees { get; set; }
+        public IEnumerable<Sections> Sections { get; set; }
     
         public TrainingsComplete()
         {
@@ -37,7 +38,7 @@ namespace TrainingManagementPortalAPI
             
             Departments = [];
             Employees = [];
-
+            Sections = [];
         }
     }
 }
