@@ -19,23 +19,32 @@ public class TrainingsController : ControllerBase
 
     [HttpGet("GetTrainings")]
 
-    public IEnumerable<Trainings> GetTrainings()
+    public IEnumerable<Trainings> GetTrainings(string? userId)
     {
-        string sql = @"SELECT [TrainingId],
-                    [Title],
-                    [Description],
-                    [Individual],
-                    [Adress],
-                    [Deadline],
-                    [Trainer],
-                    [ForEmployees],
-                    [ForDepartments]
-    FROM TrainingDatabaseSchema.Trainings
-";
+        string sql = "";
+        if (userId != null)
+        {
+            sql = @"EXECUTE TrainingDatabaseSchema.GetTotalTrainingsByUser @UserId = '" + userId + "'";
 
-        var trainings = _dapper.LoadData<Trainings>(sql);
+            var trainings = _dapper.LoadData<Trainings>(sql);
 
-        return trainings;
+            return trainings;
+        } else {
+            sql = @"SELECT [TrainingId],
+                            [Title],
+                            [Description],
+                            [Individual],
+                            [Adress],
+                            [Deadline],
+                            [Trainer],
+                            [ForEmployees],
+                            [ForDepartments]
+                        FROM TrainingDatabaseSchema.Trainings;";
+
+            var trainings = _dapper.LoadData<Trainings>(sql);
+
+            return trainings;
+        }
 
     }
 
@@ -243,16 +252,30 @@ public class TrainingsController : ControllerBase
         throw new Exception("Failed to delete training");
     }
 
-    [HttpGet("GetMissedTrainingsByEmployee/{employeeId}")]
-    public IEnumerable<Trainings> GetMissedTrainingsByEmployee(int employeeId)
+    [HttpGet("GetMissedTrainingsByEmployee")]
+    public IEnumerable<Trainings> GetMissedTrainingsByEmployee(int employeeId, string? userId)
     {
         var current = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
+        string sql = "";
+        if (userId != null) {
+            sql = @"SELECT E.EmployeeId FROM TrainingDatabaseSchema.Employees AS E 
+                                JOIN TrainingDatabaseSchema.Users AS U ON E.UserId = U.UserId 
+                            WHERE U.UserId = '" + userId + "'";
 
-        string sql = @"EXECUTE TrainingDatabaseSchema.GetMissedTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
+            int userEmployeeId = _dapper.LoadDataSingle<int>(sql);
 
-        IEnumerable<Trainings> missedTrainings = _dapper.LoadData<Trainings>(sql);
+            sql = @"EXECUTE TrainingDatabaseSchema.GetMissedTrainingsByEmployee @EmployeeId = '" + userEmployeeId + "', @TodayDateTime = '" + current + "'";
 
-        return missedTrainings;
+            IEnumerable<Trainings> missedTrainings = _dapper.LoadData<Trainings>(sql);
+
+            return missedTrainings;
+        } else {
+            sql = @"EXECUTE TrainingDatabaseSchema.GetMissedTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
+
+            IEnumerable<Trainings> missedTrainings = _dapper.LoadData<Trainings>(sql);
+
+            return missedTrainings;
+        }
     }
 
     [HttpGet("GetCompletedTrainingsByEmployee/{employeeId}")]
