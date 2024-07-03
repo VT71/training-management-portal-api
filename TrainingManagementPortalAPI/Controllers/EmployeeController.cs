@@ -24,14 +24,30 @@ public class EmployeeController : ControllerBase
         return employeesComplete;
     }
 
-    [HttpGet("GetEmployeeComplete/{employeeId}")]
-    public EmployeeComplete GetEmployeeComplete(int employeeId)
+    [HttpGet("GetEmployeeComplete")]
+    public EmployeeComplete GetEmployeeComplete(int employeeId, string? userId)
     {
-        string sql = @"EXECUTE TrainingDatabaseSchema.getEmployeeComplete @EmployeeId = '" + employeeId + "'";
+        string sql = "";
 
-        EmployeeComplete employeeComplete = _dapper.LoadDataSingle<EmployeeComplete>(sql);
+        if (userId != null) {
+            sql = @"SELECT E.EmployeeId FROM TrainingDatabaseSchema.Employees AS E 
+                                JOIN TrainingDatabaseSchema.Users AS U ON E.UserId = U.UserId 
+                            WHERE U.UserId = '" + userId + "'";
 
-        return employeeComplete;
+            int userEmployeeId = _dapper.LoadDataSingle<int>(sql);
+
+            sql = @"EXECUTE TrainingDatabaseSchema.getEmployeeComplete @EmployeeId = '" + userEmployeeId + "'";
+
+            EmployeeComplete employeeComplete = _dapper.LoadDataSingle<EmployeeComplete>(sql);
+
+            return employeeComplete;
+        } else {
+            sql = @"EXECUTE TrainingDatabaseSchema.getEmployeeComplete @EmployeeId = '" + employeeId + "'";
+
+            EmployeeComplete employeeComplete = _dapper.LoadDataSingle<EmployeeComplete>(sql);
+
+            return employeeComplete;
+        }
     }
 
     [HttpGet("GetEmployees")]

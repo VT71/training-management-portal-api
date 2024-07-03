@@ -306,16 +306,31 @@ public class TrainingsController : ControllerBase
         }
     }
 
-    [HttpGet("GetCompletedTrainingsByEmployee/{employeeId}")]
-    public IEnumerable<Trainings> GetCompletedTrainingsByEmployee(int employeeId)
+    [HttpGet("GetCompletedTrainingsByEmployee")]
+    public IEnumerable<Trainings> GetCompletedTrainingsByEmployee(int employeeId, string? userId)
     {
         var current = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
+        string sql = "";
 
-        string sql = @"EXECUTE TrainingDatabaseSchema.GetCompletedTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
+         if (userId != null) {
+            sql = @"SELECT E.EmployeeId FROM TrainingDatabaseSchema.Employees AS E 
+                                JOIN TrainingDatabaseSchema.Users AS U ON E.UserId = U.UserId 
+                            WHERE U.UserId = '" + userId + "'";
 
-        IEnumerable<Trainings> completedTrainings = _dapper.LoadData<Trainings>(sql);
+            int userEmployeeId = _dapper.LoadDataSingle<int>(sql);
 
-        return completedTrainings;
+            sql = @"EXECUTE TrainingDatabaseSchema.GetCompletedTrainingsByEmployee @EmployeeId = '" + userEmployeeId + "', @TodayDateTime = '" + current + "'";
+
+            IEnumerable<Trainings> completedTrainings = _dapper.LoadData<Trainings>(sql);
+
+            return completedTrainings;
+        } else {
+            sql = @"EXECUTE TrainingDatabaseSchema.GetCompletedTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
+
+            IEnumerable<Trainings> completedTrainings = _dapper.LoadData<Trainings>(sql);
+
+            return completedTrainings;
+        }
     }
 
     [HttpGet("GetUpcomingTrainingsByEmployee")]
