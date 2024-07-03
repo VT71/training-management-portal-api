@@ -2,7 +2,7 @@ namespace TrainingManagementPortalAPI
 {
     public partial class Sections
     {
-        public int SectionsId { get; set; }
+        public int SectionId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
 

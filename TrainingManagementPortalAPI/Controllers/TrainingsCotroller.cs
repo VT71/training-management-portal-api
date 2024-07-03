@@ -42,6 +42,7 @@ public class TrainingsController : ControllerBase
     [HttpPost("CreateTraining")]
     public async Task<IActionResult> CreateTraining(TrainingsComplete trainings)
     {
+        // 
         Console.WriteLine(trainings);
         string sql = @"EXECUTE TrainingDatabaseSchema.CreateTraining 
         @Title = @Title, 
@@ -52,6 +53,11 @@ public class TrainingsController : ControllerBase
         @Trainer = @Trainer, 
         @ForDepartments = @ForDepartments, 
         @ForEmployees = @ForEmployees";
+
+        if (trainings.Trainer == 0)
+        {
+            trainings.Trainer = null;
+        }
 
         var parameters = new
         {
@@ -83,72 +89,94 @@ public class TrainingsController : ControllerBase
             _dapper.ExecuteSql(sqlConnectEmployee, parametersConnectEmployee);
         }
 
-        // Define the DataTable for sections
-        DataTable sectionsTable = new();
-        sectionsTable.Columns.Add("Title", typeof(string));
-        sectionsTable.Columns.Add("Description", typeof(string));
-
-        // Populate the DataTable with section data
-        foreach (var section in trainings.Sections)
+        foreach (var department in trainings.Departments)
         {
-            sectionsTable.Rows.Add(section.Title, section.Description);
+            string sqlConnectDepartment = @"EXECUTE TrainingDatabaseSchema.connectDepartmentWithTraining 
+            @DepartmentId = @DepartmentId,
+            @TrainingId = @TrainingId";
 
-            // Create the SQL command to create the training and sections
-            string sqlCreateWithSections = @"EXECUTE TrainingDatabaseSchema.CreateTrainingWithSections 
-                   @TrainingTitle = @TrainingTitle, 
-                   @TrainingDescription = @TrainingDescription, 
-                   @Sections = @Sections";
-
-            // Define the parameters
-            var parametersCreateWithSections = new
+            var parametersConnectDepartment = new
             {
-                trainings.Title,
-                trainings.Description,
-                Sections = sectionsTable // Pass the DataTable as a parameter
+                department.DepartmentId,
+                newTraining.TrainingId
             };
 
-            _dapper.ExecuteSql(sqlCreateWithSections, parametersCreateWithSections);
+            _dapper.ExecuteSql(sqlConnectDepartment, parametersConnectDepartment);
         }
+
+        foreach (var section in trainings.Sections)
+        {
+            // Create the SQL command to create the training and sections
+            string sqlCreateWithSections = @"EXECUTE TrainingDatabaseSchema.connectSectionsWithTraining 
+            @TrainingId = @TrainingId,
+            @Title = @Title,
+            @Description = @Description;"
+            ;
+
+            // Define the parameters
+            var parametersConnectWithSections = new
+            {
+                newTraining.TrainingId,
+                section.Title,
+                section.Description
+                // Pass the DataTable as a parameter
+            };
+
+            _dapper.ExecuteSql(sqlCreateWithSections, parametersConnectWithSections);
+        }
+
+
         // 3. Conectare departamente cu trainingul (apel procedură stocată connectDepartmentWithTraining)
-
-
         // Send email to trainer
-        sql = @"SELECT [U].[FullName],[U].[Email]
-                    FROM TrainingDatabaseSchema.Trainings AS T
-                        JOIN TrainingDatabaseSchema.Employees AS E ON T.Trainer = E.EmployeeId
-                        JOIN TrainingDatabaseSchema.Users AS U ON U.UserId = E.UserId
-                    WHERE T.TrainingId = '" + newTraining.TrainingId + "';";
+        // sql = @"SELECT [U].[FullName],[U].[Email]
+        //             FROM TrainingDatabaseSchema.Trainings AS T
+        //                 JOIN TrainingDatabaseSchema.Employees AS E ON T.Trainer = E.EmployeeId
+        //                 JOIN TrainingDatabaseSchema.Users AS U ON U.UserId = E.UserId
+        //             WHERE T.TrainingId = '" + newTraining.TrainingId + "';";
 
-        EmployeeComplete trainingTrainer = _dapper.LoadDataSingle<EmployeeComplete>(sql);
+        // try
+        // {
+        //     EmployeeComplete? trainingTrainer = _dapper.LoadDataSingle<EmployeeComplete>(sql);
 
-        await _externalApiService.NotifyTrainingParticipants(newTraining, new List<EmployeeComplete> { trainingTrainer }, "trainer");
+        //     if (trainingTrainer != null)
+        //     {
+        //         await _externalApiService.NotifyTrainingParticipants(newTraining, new List<EmployeeComplete> { trainingTrainer }, "trainer");
+        //     }
+        // }
+        // catch (Exception e)
+        // {
+        // }
 
-        // Send email to each employee
-        if (trainings.Employees.Count() > 0)
-        {
-            sql = @"SELECT [U].[FullName],[U].[Email]
-                    FROM TrainingDatabaseSchema.Training_Employee AS TE
-                        JOIN TrainingDatabaseSchema.Employees AS E ON TE.EmployeeId = E.EmployeeId
-                        JOIN TrainingDatabaseSchema.Users AS U ON U.UserId = E.UserId
-                    WHERE TE.TrainingId = '" + newTraining.TrainingId + "';";
+        // // Send email to each employee
+        // if (trainings.Employees.Count() > 0)
+        // {
+        //     sql = @"SELECT [U].[FullName],[U].[Email]
+        //             FROM TrainingDatabaseSchema.Training_Employee AS TE
+        //                 JOIN TrainingDatabaseSchema.Employees AS E ON TE.EmployeeId = E.EmployeeId
+        //                 JOIN TrainingDatabaseSchema.Users AS U ON U.UserId = E.UserId
+        //             WHERE TE.TrainingId = '" + newTraining.TrainingId + "';";
 
-            IEnumerable<EmployeeComplete> trainingEmployees = _dapper.LoadData<EmployeeComplete>(sql);
-            await _externalApiService.NotifyTrainingParticipants(newTraining, trainingEmployees, "employee");
-        }
+        //     IEnumerable<EmployeeComplete> trainingEmployees = _dapper.LoadData<EmployeeComplete>(sql);
+        //     await _externalApiService.NotifyTrainingParticipants(newTraining, trainingEmployees, "employee");
+        // }
 
-        // Send email to each employee from department
-        if (trainings.Departments.Count() > 0)
-        {
-            sql = @"SELECT [U].[FullName],[U].[Email]
-                    FROM TrainingDatabaseSchema.Training_Department AS TD
-                        JOIN TrainingDatabaseSchema.Employees AS E ON TD.DepartmentId = E.DepartmentId
-                        JOIN TrainingDatabaseSchema.Users AS U ON U.UserId = E.UserId
-                    WHERE TD.TrainingId = '" + newTraining.TrainingId + "';";
+        // // Send email to each employee from department
+        // if (trainings.Departments.Count() > 0)
+        // {
+        //     sql = @"SELECT [U].[FullName],[U].[Email]
+        //             FROM TrainingDatabaseSchema.Training_Department AS TD
+        //                 JOIN TrainingDatabaseSchema.Employees AS E ON TD.DepartmentId = E.DepartmentId
+        //                 JOIN TrainingDatabaseSchema.Users AS U ON U.UserId = E.UserId
+        //             WHERE TD.TrainingId = '" + newTraining.TrainingId + "';";
 
-            IEnumerable<EmployeeComplete> trainingDepartmentEmployees = _dapper.LoadData<EmployeeComplete>(sql);
+        //     IEnumerable<EmployeeComplete> trainingDepartmentEmployees = _dapper.LoadData<EmployeeComplete>(sql);
 
-            await _externalApiService.NotifyTrainingParticipants(newTraining, trainingDepartmentEmployees, "employee");
-        }
+        //     await _externalApiService.NotifyTrainingParticipants(newTraining, trainingDepartmentEmployees, "employee");
+        // }
+
+        // Define the DataTable for sections
+        // Populate the DataTable with section data
+
 
 
         return Ok();
