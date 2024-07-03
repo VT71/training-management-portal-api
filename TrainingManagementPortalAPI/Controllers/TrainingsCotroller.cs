@@ -318,16 +318,31 @@ public class TrainingsController : ControllerBase
         return completedTrainings;
     }
 
-    [HttpGet("GetUpcomingTrainingsByEmployee/{employeeId}")]
-    public IEnumerable<Trainings> GetUpcomingTrainingsByEmployee(int employeeId)
+    [HttpGet("GetUpcomingTrainingsByEmployee")]
+    public IEnumerable<Trainings> GetUpcomingTrainingsByEmployee(int employeeId, string? userId)
     {
         var current = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
+        string sql = "";
 
-        string sql = @"EXECUTE TrainingDatabaseSchema.GetUpcomingTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
+        if (userId != null) {
+            sql = @"SELECT E.EmployeeId FROM TrainingDatabaseSchema.Employees AS E 
+                                JOIN TrainingDatabaseSchema.Users AS U ON E.UserId = U.UserId 
+                            WHERE U.UserId = '" + userId + "'";
 
-        IEnumerable<Trainings> upcomingTrainings = _dapper.LoadData<Trainings>(sql);
+            int userEmployeeId = _dapper.LoadDataSingle<int>(sql);
 
-        return upcomingTrainings;
+            sql = @"EXECUTE TrainingDatabaseSchema.GetUpcomingTrainingsByEmployee @EmployeeId = '" + userEmployeeId + "', @TodayDateTime = '" + current + "'";
+
+            IEnumerable<Trainings> upcomingTrainings = _dapper.LoadData<Trainings>(sql);
+
+            return upcomingTrainings;
+        } else {
+            sql = @"EXECUTE TrainingDatabaseSchema.GetUpcomingTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
+
+            IEnumerable<Trainings> upcomingTrainings = _dapper.LoadData<Trainings>(sql);
+
+            return upcomingTrainings;
+        }
     }
 
     [HttpGet("GetInProgressTrainingsByEmployee/{employeeId}")]
@@ -358,7 +373,6 @@ public class TrainingsController : ControllerBase
     public IEnumerable<Trainings> GetUpcomingTrainings()
     {
         var current = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
-        Console.WriteLine(current);
 
         string sql = @"EXECUTE TrainingDatabaseSchema.GetUpcomingTrainings @TodayDateTime = '" + current + "'";
 
