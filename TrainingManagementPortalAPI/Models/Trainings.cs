@@ -8,7 +8,7 @@ namespace TrainingManagementPortalAPI
         public int Individual { get; set; }
         public string Adress { get; set; }
         public DateTime Deadline { get; set; }
-        public int Trainer { get; set; }
+        public int ?Trainer { get; set; }
         public int ForDepartments { get; set; }
         public int ForEmployees { get; set; }
 
