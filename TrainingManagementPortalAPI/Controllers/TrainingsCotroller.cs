@@ -360,16 +360,31 @@ public class TrainingsController : ControllerBase
         }
     }
 
-    [HttpGet("GetInProgressTrainingsByEmployee/{employeeId}")]
-    public IEnumerable<Trainings> GetInProgressTrainingsByEmployee(int employeeId)
+    [HttpGet("GetInProgressTrainingsByEmployee")]
+    public IEnumerable<Trainings> GetInProgressTrainingsByEmployee(int employeeId, string? userId)
     {
         var current = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
+        string sql = "";
 
-        string sql = @"EXECUTE TrainingDatabaseSchema.GetInProgressTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
+        if (userId != null) {
+            sql = @"SELECT E.EmployeeId FROM TrainingDatabaseSchema.Employees AS E 
+                                JOIN TrainingDatabaseSchema.Users AS U ON E.UserId = U.UserId 
+                            WHERE U.UserId = '" + userId + "'";
 
-        IEnumerable<Trainings> upcomingTrainings = _dapper.LoadData<Trainings>(sql);
+            int userEmployeeId = _dapper.LoadDataSingle<int>(sql);
 
-        return upcomingTrainings;
+            sql = @"EXECUTE TrainingDatabaseSchema.GetInProgressTrainingsByEmployee @EmployeeId = '" + userEmployeeId + "', @TodayDateTime = '" + current + "'";
+
+            IEnumerable<Trainings> upcomingTrainings = _dapper.LoadData<Trainings>(sql);
+
+            return upcomingTrainings;
+        } else {
+            sql = @"EXECUTE TrainingDatabaseSchema.GetInProgressTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
+
+            IEnumerable<Trainings> upcomingTrainings = _dapper.LoadData<Trainings>(sql);
+
+            return upcomingTrainings;
+        }
     }
 
     [HttpGet("GetMissedTrainings")]
