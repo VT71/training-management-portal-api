@@ -16,7 +16,7 @@ public class ProgressController : ControllerBase
     }
 
     [HttpGet("GetAllProgressByEmployeeTraining")]
-    public IEnumerable<SectionProgress> GetPercentageOfCompletedTrainingsByRange([FromQuery] int employeeId, int trainingId)
+    public IEnumerable<SectionProgress> GetAllProgressByEmployeeTraining([FromQuery] int employeeId, int trainingId)
     {
         string sql = @"SELECT [P].[ProgressId],
                         [P].[SectionId],
