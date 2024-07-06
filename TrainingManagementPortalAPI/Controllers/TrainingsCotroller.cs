@@ -29,7 +29,9 @@ public class TrainingsController : ControllerBase
             var trainings = _dapper.LoadData<Trainings>(sql);
 
             return trainings;
-        } else {
+        }
+        else
+        {
             sql = @"SELECT [TrainingId],
                             [Title],
                             [Description],
@@ -224,6 +226,22 @@ public class TrainingsController : ControllerBase
                     training.Departments = departments;
                 }
             }
+
+            if (training.Individual == 1)
+            {
+                sql = @"SELECT [S].[SectionId],
+                            [S].[TrainingId],
+                            [S].[Title],
+                            [S].[Description]
+                        FROM TrainingDatabaseSchema.Sections AS S
+                        WHERE S.TrainingId = '" + trainingId + "'";
+                var sections = _dapper.LoadData<Sections>(sql);
+
+                if (sections != null)
+                {
+                    training.Sections = sections;
+                }
+            }
         }
         return training;
 
@@ -285,7 +303,8 @@ public class TrainingsController : ControllerBase
     {
         var current = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
         string sql = "";
-        if (userId != null) {
+        if (userId != null)
+        {
             sql = @"SELECT E.EmployeeId FROM TrainingDatabaseSchema.Employees AS E 
                                 JOIN TrainingDatabaseSchema.Users AS U ON E.UserId = U.UserId 
                             WHERE U.UserId = '" + userId + "'";
@@ -297,7 +316,9 @@ public class TrainingsController : ControllerBase
             IEnumerable<Trainings> missedTrainings = _dapper.LoadData<Trainings>(sql);
 
             return missedTrainings;
-        } else {
+        }
+        else
+        {
             sql = @"EXECUTE TrainingDatabaseSchema.GetMissedTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
 
             IEnumerable<Trainings> missedTrainings = _dapper.LoadData<Trainings>(sql);
@@ -312,7 +333,8 @@ public class TrainingsController : ControllerBase
         var current = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
         string sql = "";
 
-         if (userId != null) {
+        if (userId != null)
+        {
             sql = @"SELECT E.EmployeeId FROM TrainingDatabaseSchema.Employees AS E 
                                 JOIN TrainingDatabaseSchema.Users AS U ON E.UserId = U.UserId 
                             WHERE U.UserId = '" + userId + "'";
@@ -324,7 +346,9 @@ public class TrainingsController : ControllerBase
             IEnumerable<Trainings> completedTrainings = _dapper.LoadData<Trainings>(sql);
 
             return completedTrainings;
-        } else {
+        }
+        else
+        {
             sql = @"EXECUTE TrainingDatabaseSchema.GetCompletedTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
 
             IEnumerable<Trainings> completedTrainings = _dapper.LoadData<Trainings>(sql);
@@ -339,7 +363,8 @@ public class TrainingsController : ControllerBase
         var current = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
         string sql = "";
 
-        if (userId != null) {
+        if (userId != null)
+        {
             sql = @"SELECT E.EmployeeId FROM TrainingDatabaseSchema.Employees AS E 
                                 JOIN TrainingDatabaseSchema.Users AS U ON E.UserId = U.UserId 
                             WHERE U.UserId = '" + userId + "'";
@@ -351,7 +376,9 @@ public class TrainingsController : ControllerBase
             IEnumerable<Trainings> upcomingTrainings = _dapper.LoadData<Trainings>(sql);
 
             return upcomingTrainings;
-        } else {
+        }
+        else
+        {
             sql = @"EXECUTE TrainingDatabaseSchema.GetUpcomingTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
 
             IEnumerable<Trainings> upcomingTrainings = _dapper.LoadData<Trainings>(sql);
@@ -366,7 +393,8 @@ public class TrainingsController : ControllerBase
         var current = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
         string sql = "";
 
-        if (userId != null) {
+        if (userId != null)
+        {
             sql = @"SELECT E.EmployeeId FROM TrainingDatabaseSchema.Employees AS E 
                                 JOIN TrainingDatabaseSchema.Users AS U ON E.UserId = U.UserId 
                             WHERE U.UserId = '" + userId + "'";
@@ -378,7 +406,9 @@ public class TrainingsController : ControllerBase
             IEnumerable<Trainings> upcomingTrainings = _dapper.LoadData<Trainings>(sql);
 
             return upcomingTrainings;
-        } else {
+        }
+        else
+        {
             sql = @"EXECUTE TrainingDatabaseSchema.GetInProgressTrainingsByEmployee @EmployeeId = '" + employeeId + "', @TodayDateTime = '" + current + "'";
 
             IEnumerable<Trainings> upcomingTrainings = _dapper.LoadData<Trainings>(sql);
