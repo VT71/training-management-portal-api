@@ -70,16 +70,16 @@ public class ProgressController : ControllerBase
 
             if (_dapper.ExecuteSql(sql, parameters) == true)
             {
-                return Ok("Progress updated successfully");
+                return Ok(new { message = "Progress updated successfully" });
             }
             else
             {
-                return BadRequest("Progress not updated");
+                return BadRequest(new { message = "Progress not updated" });
             }
         }
         else
         {
-            return BadRequest("User not found");
+            return BadRequest(new { message = "User not found" });
         }
     }
 }
