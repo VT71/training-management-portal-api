@@ -19,6 +19,8 @@ namespace TrainingManagementPortalAPI
         }
         public T LoadDataSingle<T>(string sql, object? parameters = null)
         {
+            Console.WriteLine("CONN STRING SQLCONSTR: " + _config.GetConnectionString("SQLCONNSTR_DefaultConnection"));
+            Console.WriteLine("CONN STRING: " + _config.GetConnectionString("DefaultConnection"));
             IDbConnection dbConnection = new SqlConnection(_config.GetConnectionString("SQLCONNSTR_DefaultConnection"));
             return dbConnection.QuerySingle<T>(sql, parameters);
         }
