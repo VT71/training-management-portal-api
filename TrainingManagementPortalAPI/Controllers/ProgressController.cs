@@ -15,16 +15,24 @@ public class ProgressController : ControllerBase
         _dapper = new DataContextDapper(config);
     }
 
-    [HttpGet("GetAllProgressByEmployeeTraining")]
-    public IEnumerable<SectionProgress> GetPercentageOfCompletedTrainingsByRange([FromQuery] int employeeId, int trainingId)
+    [HttpGet("GetAllProgressByUserTraining")]
+    public IEnumerable<SectionProgress> GetAllProgressByUserTraining([FromQuery] string userId, int trainingId)
     {
-        string sql = @"SELECT [P].[ProgressId],
+        string sql = "";
+
+        sql = @"SELECT E.EmployeeId FROM TrainingDatabaseSchema.Employees AS E 
+                                JOIN TrainingDatabaseSchema.Users AS U ON E.UserId = U.UserId 
+                            WHERE U.UserId = '" + userId + "'";
+
+        int userEmployeeId = _dapper.LoadDataSingle<int>(sql);
+
+        sql = @"SELECT [P].[ProgressId],
                         [P].[SectionId],
                         [P].[EmployeeId],
                         [P].[Progress]
                     FROM TrainingDatabaseSchema.Sections AS S
                         JOIN TrainingDatabaseSchema.Progress AS P ON S.SectionId = P.SectionId
-                    WHERE S.TrainingId = '" + trainingId + "' AND P.EmployeeId = '" + employeeId + "';";
+                    WHERE S.TrainingId = '" + trainingId + "' AND P.EmployeeId = '" + userEmployeeId + "';";
 
         IEnumerable<SectionProgress> allProgress = _dapper.LoadData<SectionProgress>(sql);
 
@@ -62,16 +70,16 @@ public class ProgressController : ControllerBase
 
             if (_dapper.ExecuteSql(sql, parameters) == true)
             {
-                return Ok("Progress updated successfully");
+                return Ok(new { message = "Progress updated successfully" });
             }
             else
             {
-                return BadRequest("Progress not updated");
+                return BadRequest(new { message = "Progress not updated" });
             }
         }
         else
         {
-            return BadRequest("User not found");
+            return BadRequest(new { message = "User not found" });
         }
     }
 }
