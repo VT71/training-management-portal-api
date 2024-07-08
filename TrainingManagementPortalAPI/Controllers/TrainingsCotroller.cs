@@ -250,38 +250,73 @@ public class TrainingsController : ControllerBase
     [HttpPut("UpdateTraining/{trainingId}")]
     public IActionResult UpdateTraining(int trainingId, TrainingsComplete trainings)
     {
-        string sql = @"EXECUTE TrainingDatabaseSchema.UpdateTraining 
-        @TrainingId = @TrainingId,
-        @Title = @Title, 
-        @Description = @Description, 
-        @Individual = @Individual, 
-        @Adress = @Adress, 
-        @Deadline = @Deadline, 
-        @Trainer = @Trainer, 
-        @ForDepartments = @ForDepartments, 
-        @ForEmployees = @ForEmployees";
-
-        var parameters = new
+        try
         {
-            TrainingId = trainingId,
-            trainings.Title,
-            trainings.Description,
-            trainings.Individual,
-            trainings.Adress,
-            trainings.Deadline,
-            trainings.Trainer,
-            trainings.ForDepartments,
-            trainings.ForEmployees,
-        };
+            string sql = @"EXECUTE TrainingDatabaseSchema.UpdateTraining 
+            @TrainingId = @TrainingId,
+            @Title = @Title, 
+            @Description = @Description, 
+            @Individual = @Individual, 
+            @Adress = @Adress, 
+            @Deadline = @Deadline, 
+            @Trainer = @Trainer, 
+            @ForDepartments = @ForDepartments, 
+            @ForEmployees = @ForEmployees";
 
-        if (_dapper.ExecuteSql(sql, parameters))
-        {
-            return Ok();
+            var parameters = new
+            {
+                TrainingId = trainingId,
+                trainings.Title,
+                trainings.Description,
+                trainings.Individual,
+                trainings.Adress,
+                trainings.Deadline,
+                trainings.Trainer,
+                trainings.ForDepartments,
+                trainings.ForEmployees,
+            };
+
+            _dapper.ExecuteSql(sql, parameters);
+
+            foreach (var employee in trainings.Employees)
+            {
+                string sqlConnectEmployee = @"EXECUTE TrainingDatabaseSchema.connectEmployeeWithTraining 
+                @EmployeeId = @EmployeeId,
+                @TrainingId = @TrainingId";
+
+                var parametersConnectEmployee = new
+                {
+                    EmployeeId = employee.EmployeeId,
+                    TrainingId = trainingId
+                };
+
+                _dapper.ExecuteSql(sqlConnectEmployee, parametersConnectEmployee);
+            }
+
+            foreach (var department in trainings.Departments)
+            {
+                string sqlConnectDepartment = @"EXECUTE TrainingDatabaseSchema.connectDepartmentWithTraining 
+                @DepartmentId = @DepartmentId,
+                @TrainingId = @TrainingId";
+
+                var parametersConnectDepartment = new
+                {
+                    DepartmentId = department.DepartmentId,
+                    TrainingId = trainingId
+                };
+
+                _dapper.ExecuteSql(sqlConnectDepartment, parametersConnectDepartment);
+            }
+
+            // Return success response
+            return Ok(trainings); // You can return the updated training object or a success message
         }
-
-        throw new Exception("Failed to update training");
+        catch (Exception ex)
+        {
+            // Log the exception or handle it in some appropriate way
+            return StatusCode(500, "Failed to update training"); // Return appropriate error response
+        }
     }
-
 
     [HttpDelete("DeleteTraining/{trainingId}")]
     public IActionResult DeleteTraining(int trainingId)
