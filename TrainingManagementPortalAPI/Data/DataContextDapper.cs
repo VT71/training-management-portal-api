@@ -21,7 +21,7 @@ namespace TrainingManagementPortalAPI
         {
             Console.WriteLine("CONN STRING SQLCONSTR: " + _config.GetConnectionString("SQLCONNSTR_DefaultConnection"));
             Console.WriteLine("CONN STRING: " + _config.GetConnectionString("DefaultConnection"));
-            IDbConnection dbConnection = new SqlConnection(_config.GetConnectionString("SQLCONNSTR_DefaultConnection"));
+            IDbConnection dbConnection = new SqlConnection(_config.GetConnectionString("DefaultConnection"));
             return dbConnection.QuerySingle<T>(sql, parameters);
         }
 
