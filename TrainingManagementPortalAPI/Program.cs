@@ -1,7 +1,6 @@
 var builder = WebApplication.CreateBuilder(args);
 
-var emailApiKey = builder.Configuration["EmailApiKey"];
-Console.WriteLine("EMAIL KEY: " + emailApiKey);
+// var emailApiKey = builder.Configuration["EmailApiKey"];
 builder.Services.AddHttpClient<IExternalApiService, ExternalApiService>();
 builder.Services.AddControllers();
 
