@@ -53,8 +53,6 @@ public class TrainingsController : ControllerBase
     [HttpPost("CreateTraining")]
     public async Task<IActionResult> CreateTraining(TrainingsComplete trainings)
     {
-        // 
-        Console.WriteLine(trainings);
         string sql = @"EXECUTE TrainingDatabaseSchema.CreateTraining 
         @Title = @Title, 
         @Description = @Description, 
