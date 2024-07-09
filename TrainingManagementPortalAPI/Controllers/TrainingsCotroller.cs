@@ -134,57 +134,52 @@ public class TrainingsController : ControllerBase
             _dapper.ExecuteSql(sqlCreateWithSections, parametersConnectWithSections);
         }
 
-
-        // 3. Conectare departamente cu trainingul (apel procedură stocată connectDepartmentWithTraining)
         // Send email to trainer
-        // sql = @"SELECT [U].[FullName],[U].[Email]
-        //             FROM TrainingDatabaseSchema.Trainings AS T
-        //                 JOIN TrainingDatabaseSchema.Employees AS E ON T.Trainer = E.EmployeeId
-        //                 JOIN TrainingDatabaseSchema.Users AS U ON U.UserId = E.UserId
-        //             WHERE T.TrainingId = '" + newTraining.TrainingId + "';";
+        sql = @"SELECT [U].[FullName],[U].[Email]
+                    FROM TrainingDatabaseSchema.Trainings AS T
+                        JOIN TrainingDatabaseSchema.Employees AS E ON T.Trainer = E.EmployeeId
+                        JOIN TrainingDatabaseSchema.Users AS U ON U.UserId = E.UserId
+                    WHERE T.TrainingId = '" + newTraining.TrainingId + "';";
 
-        // try
-        // {
-        //     EmployeeComplete? trainingTrainer = _dapper.LoadDataSingle<EmployeeComplete>(sql);
+        try
+        {
+            EmployeeComplete? trainingTrainer = _dapper.LoadDataSingle<EmployeeComplete>(sql);
 
-        //     if (trainingTrainer != null)
-        //     {
-        //         await _externalApiService.NotifyTrainingParticipants(newTraining, new List<EmployeeComplete> { trainingTrainer }, "trainer");
-        //     }
-        // }
-        // catch (Exception e)
-        // {
-        // }
+            if (trainingTrainer != null)
+            {
+                await _externalApiService.NotifyTrainingParticipants(newTraining, new List<EmployeeComplete> { trainingTrainer }, "trainer");
+            }
+        }
+        catch (Exception e)
+        {
+        }
 
-        // // Send email to each employee
-        // if (trainings.Employees.Count() > 0)
-        // {
-        //     sql = @"SELECT [U].[FullName],[U].[Email]
-        //             FROM TrainingDatabaseSchema.Training_Employee AS TE
-        //                 JOIN TrainingDatabaseSchema.Employees AS E ON TE.EmployeeId = E.EmployeeId
-        //                 JOIN TrainingDatabaseSchema.Users AS U ON U.UserId = E.UserId
-        //             WHERE TE.TrainingId = '" + newTraining.TrainingId + "';";
+        // Send email to each employee
+        if (trainings.Employees.Count() > 0)
+        {
+            sql = @"SELECT [U].[FullName],[U].[Email]
+                    FROM TrainingDatabaseSchema.Training_Employee AS TE
+                        JOIN TrainingDatabaseSchema.Employees AS E ON TE.EmployeeId = E.EmployeeId
+                        JOIN TrainingDatabaseSchema.Users AS U ON U.UserId = E.UserId
+                    WHERE TE.TrainingId = '" + newTraining.TrainingId + "';";
 
-        //     IEnumerable<EmployeeComplete> trainingEmployees = _dapper.LoadData<EmployeeComplete>(sql);
-        //     await _externalApiService.NotifyTrainingParticipants(newTraining, trainingEmployees, "employee");
-        // }
+            IEnumerable<EmployeeComplete> trainingEmployees = _dapper.LoadData<EmployeeComplete>(sql);
+            await _externalApiService.NotifyTrainingParticipants(newTraining, trainingEmployees, "employee");
+        }
 
-        // // Send email to each employee from department
-        // if (trainings.Departments.Count() > 0)
-        // {
-        //     sql = @"SELECT [U].[FullName],[U].[Email]
-        //             FROM TrainingDatabaseSchema.Training_Department AS TD
-        //                 JOIN TrainingDatabaseSchema.Employees AS E ON TD.DepartmentId = E.DepartmentId
-        //                 JOIN TrainingDatabaseSchema.Users AS U ON U.UserId = E.UserId
-        //             WHERE TD.TrainingId = '" + newTraining.TrainingId + "';";
+        // Send email to each employee from department
+        if (trainings.Departments.Count() > 0)
+        {
+            sql = @"SELECT [U].[FullName],[U].[Email]
+                    FROM TrainingDatabaseSchema.Training_Department AS TD
+                        JOIN TrainingDatabaseSchema.Employees AS E ON TD.DepartmentId = E.DepartmentId
+                        JOIN TrainingDatabaseSchema.Users AS U ON U.UserId = E.UserId
+                    WHERE TD.TrainingId = '" + newTraining.TrainingId + "';";
 
-        //     IEnumerable<EmployeeComplete> trainingDepartmentEmployees = _dapper.LoadData<EmployeeComplete>(sql);
+            IEnumerable<EmployeeComplete> trainingDepartmentEmployees = _dapper.LoadData<EmployeeComplete>(sql);
 
-        //     await _externalApiService.NotifyTrainingParticipants(newTraining, trainingDepartmentEmployees, "employee");
-        // }
-
-        // Define the DataTable for sections
-        // Populate the DataTable with section data
+            await _externalApiService.NotifyTrainingParticipants(newTraining, trainingDepartmentEmployees, "employee");
+        }
 
 
 
