@@ -23,6 +23,7 @@ public class ExternalApiService : IExternalApiService
     {
         _httpClient = httpClient;
         _apiKey = configuration["EmailApiKey"];
+        Console.WriteLine("API KEY: " + _apiKey);
         if (string.IsNullOrEmpty(_apiKey))
         {
             _apiKey = "";
