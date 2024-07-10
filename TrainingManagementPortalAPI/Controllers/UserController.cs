@@ -16,7 +16,6 @@ public class UserController : ControllerBase
     }
 
     [HttpGet("GetUsers/{userId}")]
-    // public IEnumerable<User> GetUsers()
     public User GetUser(string userId)
     {
         string sql = @"SELECT [UserId],
