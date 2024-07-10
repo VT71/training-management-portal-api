@@ -66,7 +66,7 @@ public class ProgressController : ControllerBase
                         UPDATE SET Progress = @Progress
                     WHEN NOT MATCHED BY TARGET THEN
                         INSERT (SectionId, EmployeeId, Progress)
-                        VALUES (@SectionId, @EmployeeId, 0);";
+                        VALUES (@SectionId, @EmployeeId, @Progress);";
 
             if (_dapper.ExecuteSql(sql, parameters) == true)
             {
